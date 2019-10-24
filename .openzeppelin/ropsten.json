@@ -1,11 +1,11 @@
 {
   "contracts": {
     "TriggerTimestampPassed": {
-      "address": "0x5FF51D733ce475630C0c00A0b27204Cab1387617",
-      "constructorCode": "60806040523480156100115760006000fd5b50610017565b610355806100266000396000f3fe",
-      "bodyBytecodeHash": "7051283a2805b5e9a05673834f6e16309c196601853dfa3ea377f74af2122283",
-      "localBytecodeHash": "21908d717e48d4d48befa48b12167d66300c5a635952081daef9c66905573ea5",
-      "deployedBytecodeHash": "21908d717e48d4d48befa48b12167d66300c5a635952081daef9c66905573ea5",
+      "address": "0x7E7E69a80Ca35B70236f4E7584D614D30659e72D",
+      "constructorCode": "60806040523480156100115760006000fd5b50610017565b61045f806100266000396000f3fe",
+      "bodyBytecodeHash": "a1c24d208971947b69118d4e37f5ed374f158109bf93d521f6f8486fb9564b1f",
+      "localBytecodeHash": "123c3af81a70562ef2b4e7b4e1e15e9f07f018749f52d98913edcdbabebc369e",
+      "deployedBytecodeHash": "123c3af81a70562ef2b4e7b4e1e15e9f07f018749f52d98913edcdbabebc369e",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -59,9 +59,91 @@
           "contract": "GelatoTriggersStandard",
           "path": "contracts/Trigger-Actions/Triggers/GelatoTriggersStandard.sol",
           "label": "triggerSelector",
-          "astId": 2492,
+          "astId": 2345,
           "type": "t_bytes4",
-          "src": "143:31:23"
+          "src": "143:31:21"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "ActionKyberTrade": {
+      "address": "0x4698172f67bC419b3208A49cBB6b2235D9ea3A3A",
+      "constructorCode": "60806040523480156100115760006000fd5b50610017565b611762806100266000396000f3fe",
+      "bodyBytecodeHash": "8bd653bee596914d4a5ebf79c89fc36f1b08f2cd3720a90b57481066bbe58558",
+      "localBytecodeHash": "14918cebd760519f4c6b702cfc64700b071d02c2fe545500dfc6a73f30a4bd30",
+      "deployedBytecodeHash": "14918cebd760519f4c6b702cfc64700b071d02c2fe545500dfc6a73f30a4bd30",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_bytes4": {
+          "id": "t_bytes4",
+          "kind": "elementary",
+          "label": "bytes4"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 840,
+          "type": "t_bool",
+          "src": "757:24:5"
+        },
+        {
+          "contract": "Initializable",
+          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 842,
+          "type": "t_bool",
+          "src": "876:25:5"
+        },
+        {
+          "contract": "Initializable",
+          "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 898,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:5"
+        },
+        {
+          "contract": "GelatoActionsStandard",
+          "path": "contracts/Trigger-Actions/Actions/GelatoActionsStandard.sol",
+          "label": "actionSelector",
+          "astId": 2159,
+          "type": "t_bytes4",
+          "src": "142:30:19"
+        },
+        {
+          "contract": "GelatoActionsStandard",
+          "path": "contracts/Trigger-Actions/Actions/GelatoActionsStandard.sol",
+          "label": "actionGasStipend",
+          "astId": 2161,
+          "type": "t_uint256",
+          "src": "178:33:19"
         }
       ],
       "warnings": {
@@ -80,6 +162,15 @@
         "address": "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19",
         "version": "1.0.0",
         "implementation": "0x5FF51D733ce475630C0c00A0b27204Cab1387617",
+        "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
+        "kind": "Upgradeable"
+      }
+    ],
+    "triggered-oz/ActionKyberTrade": [
+      {
+        "address": "0x8710aF1bC86a569c18Ec5b41A656B3aA9Eca9037",
+        "version": "1.0.0",
+        "implementation": "0x4698172f67bC419b3208A49cBB6b2235D9ea3A3A",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }

@@ -1,7 +1,8 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "TriggerTimestampPassed": "TriggerTimestampPassed"
+    "TriggerTimestampPassed": "TriggerTimestampPassed",
+    "ActionKyberTrade": "ActionKyberTrade"
   },
   "dependencies": {},
   "name": "triggered-oz",

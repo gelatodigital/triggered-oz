@@ -6,6 +6,7 @@ contract TriggerTimestampPassed is GelatoTriggersStandard
 {
     function initialize()
         external
+        initializer
     {
         GelatoTriggersStandard._initialize("fired(uint256)");
     }

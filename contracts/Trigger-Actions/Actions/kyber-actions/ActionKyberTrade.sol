@@ -1,11 +1,22 @@
 pragma solidity ^0.5.0;
 
+import '../GelatoActionsStandard.sol';
 import '../../../Interfaces/Kyber/IKyber.sol';
 import '../../../Helpers/GelatoERC20Lib.sol';
 
-contract ActionKyberTrade
+contract ActionKyberTrade is GelatoActionsStandard
 {
     using GelatoERC20Lib for IERC20;
+
+    function initialize()
+        external
+        initializer
+    {
+        GelatoActionsStandard
+            ._initialize("action(address,address,address,uint256,uint256)",
+                         300000
+        );
+    }
 
     event LogTrade(address src,
                    uint256 srcAmt,
