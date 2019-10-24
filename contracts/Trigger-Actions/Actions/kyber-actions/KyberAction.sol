@@ -117,9 +117,9 @@ contract KyberAction is Helper {
                                                            _minConversionRate,
                                                            address(0)  // fee-sharing
         );
-        emit LogTrade(src,
-                      srcAmt,
-                      dest,
+        emit LogTrade(_src,
+                      _srcAmt,
+                      _dest,
                       destAmt,
                       _user,
                       _minConversionRate,
