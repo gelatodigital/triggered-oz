@@ -50,9 +50,9 @@ contract ActionKyberTrade is GelatoActionsStandard
             srcERC20._safeIncreaseERC20Allowance(kyber, 2**255);
         }
         // Transfer funds from user to their userProxy
-        ///@notice this requires users to have approved the action beforehand
+        ///@notice this requires users to have approved the userProxy beforehand
         srcERC20._safeTransferFrom(_user, address(this), _srcAmt);
-
+g
         ///@notice .call action - msg.sender is userProxy (address(this))
         destAmt = IKyber(kyber).trade(_src,
                                       _srcAmt,
