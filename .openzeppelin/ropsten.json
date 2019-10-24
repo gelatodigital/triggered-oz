@@ -1,0 +1,37 @@
+{
+  "contracts": {
+    "KyberAction": {
+      "address": "0x510633C381aD11cAdF6A31dBDeb599a72040b566",
+      "constructorCode": "60806040523480156100115760006000fd5b50610017565b610b7d806100266000396000f3fe",
+      "bodyBytecodeHash": "07973279842196f44cf8a1fbf4ebb7ed361f806abc39df9578e059e2fa50c213",
+      "localBytecodeHash": "471e07f202a8723597156a9e452e695a41d6ee804fa45b4dd4979b3f573af8fe",
+      "deployedBytecodeHash": "471e07f202a8723597156a9e452e695a41d6ee804fa45b4dd4979b3f573af8fe",
+      "types": {},
+      "storage": [],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    }
+  },
+  "solidityLibs": {},
+  "proxies": {
+    "triggered/KyberAction": [
+      {
+        "address": "0xF66Af45A0D184BE2063BaD684D064dAf0CCeeb8B",
+        "version": "0.0.2",
+        "implementation": "0x510633C381aD11cAdF6A31dBDeb599a72040b566",
+        "admin": "0x3A332fd2c1E644b2EeE987d2680aE2D4386931d1",
+        "kind": "Upgradeable"
+      }
+    ]
+  },
+  "manifestVersion": "2.2",
+  "version": "0.0.2",
+  "proxyAdmin": {
+    "address": "0x3A332fd2c1E644b2EeE987d2680aE2D4386931d1"
+  }
+}

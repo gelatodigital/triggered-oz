@@ -1,6 +1,8 @@
 {
   "manifestVersion": "2.2",
-  "contracts": {},
+  "contracts": {
+    "KyberAction": "KyberAction"
+  },
   "dependencies": {},
   "name": "triggered",
   "version": "0.0.2",

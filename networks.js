@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const HDWalletProvider = require("@truffle/hdwaller-provider");
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const infuraNodeEndpoint = process.env.ROPSTEN_INFURA;
 
 module.exports = {
