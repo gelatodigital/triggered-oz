@@ -13,5 +13,8 @@
     "@truffle/hdwallet-provider": "^1.0.22",
     "dotenv": "^8.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@openzeppelin/contracts": "^2.3.0",
+    "@openzeppelin/upgrades": "^2.5.3"
+  }
 }

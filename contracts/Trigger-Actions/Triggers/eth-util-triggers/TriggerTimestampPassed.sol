@@ -4,10 +4,11 @@ import '../GelatoTriggersStandard.sol';
 
 contract TriggerTimestampPassed is GelatoTriggersStandard
 {
-    constructor()
-        public
-        GelatoTriggersStandard("fired(uint256)")
-    {}
+    function initialize()
+        external
+    {
+        GelatoTriggersStandard._initialize("fired(uint256)");
+    }
 
     function fired(uint256 _timestamp)
         external
