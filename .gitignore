@@ -6,3 +6,8 @@ node_modules
 
 # truffle build directory
 build
+
+.openzeppelin
+
+
+.DS_Store
