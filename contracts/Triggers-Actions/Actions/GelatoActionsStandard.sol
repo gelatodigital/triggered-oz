@@ -4,6 +4,9 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 contract GelatoActionsStandard is Initializable
 {
+    /// @dev non-deploy base contract
+    constructor() internal {}
+    
     bytes4 internal actionSelector;
     uint256 internal actionGasStipend;
 

@@ -4,6 +4,9 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 contract GelatoTriggersStandard is Initializable
 {
+    /// @dev non-deploy base contract
+    constructor() internal {}
+    
     bytes4 internal triggerSelector;
 
     function _initialize(string memory _triggerSignature)

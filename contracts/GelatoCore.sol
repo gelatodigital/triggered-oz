@@ -15,6 +15,7 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 
 contract GelatoUserProxies is Initializable
 {
+    /// @dev non-deploy base contract
     constructor() internal {}
 
     IProxyRegistry public proxyRegistry;
@@ -100,6 +101,9 @@ contract GelatoCoreAccounting is Initializable,
                                  Ownable,
                                  ReentrancyGuard
 {
+    /// @dev non-deploy base contract
+    constructor() internal {}
+    
     using SafeMath for uint256;
 
     //_____________ Gelato ExecutionClaim Economics _______________________
