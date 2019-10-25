@@ -226,14 +226,14 @@ contract GelatoCoreAccounting is Initializable,
         executorPrice[msg.sender] = _newExecutorGasPrice;
     }
 
-    event LogSetExecutorClaim(uint256 executorClaimLifespan,
-                              uint256 newExecutorClaimLifespan
+    event LogSetExecutorClaimLigespan(uint256 executorClaimLifespan,
+                                      uint256 newExecutorClaimLifespan
     );
     function setExecutorClaimLifespan(uint256 _newExecutorClaimLifespan)
         external
     {
-        emit LogSetExecutorPrice(executorClaimLifespan[msg.sender],
-                                 _newExecutorClaimLifespan
+        emit LogSetExecutorClaimLigespan(executorClaimLifespan[msg.sender],
+                                         _newExecutorClaimLifespan
         );
         executorClaimLifespan[msg.sender] = _newExecutorClaimLifespan;
     }
