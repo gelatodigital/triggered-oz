@@ -9,7 +9,7 @@ build
 
 # OpenZeppelin SDK
 .openzeppelin/dev-*.json
-.openzeppelin/.session
+.openzeppelin/.session*
 
 # macOS
 .DS_Store
