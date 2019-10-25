@@ -9,12 +9,14 @@ Guard: 0x00eC0c566e16d03b089ff38DD38BA933279886D8
 Factories
 -------
 ProxyRegistry: 0x65503e9408baD6FB0B12144cBe5AF28a26169309
+ProxyFactory: 0xD105F797EDE92594Ffc1617EB3BAd7d182AeDC25
 GuardFactory: 0xffaF24bf2F44689ea8Dd3AF35b32DD9cFF5cf0B6
 
 Gelato
 ------
-GelatoCore - user passing: 0xbe9bDF5F7b56616bd09CAd224c8903D2de51FCeb
-GelatoCore - user proxy: 0x49A791153dbEe3fBc081Ce159d51C70A89323e73
+GelatoCoreProxy: 0x3540FFE83b2FE5488E25BBcF3dA2bD6b66c225fE
+GelatoCoreImpl1: 0xfCEFF965900E97cD07da051EF71fCB1Fb5F1E183
+GelatoCoreImpl0: 0x4206e94B8Ea52FA8188a30480BABcec3D484148A
 
 Kyber
 --------
@@ -34,6 +36,11 @@ Actions
 ------
 TestAction: 0x5a2b97997934aa2113CB289BF47006B55eC7d461
 
+
+Scripts
+-------
+MultiMintForTimeTriggerProxy: 0x22Ef77200F1E98EEe9545659F31376ACd718f7Af
+MultiMintForTimeTriggerImpl: 
 
 Helpers
 -------

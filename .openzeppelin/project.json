@@ -2,7 +2,9 @@
   "manifestVersion": "2.2",
   "contracts": {
     "TriggerTimestampPassed": "TriggerTimestampPassed",
-    "ActionKyberTrade": "ActionKyberTrade"
+    "ActionKyberTrade": "ActionKyberTrade",
+    "GelatoCore": "GelatoCore",
+    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger"
   },
   "dependencies": {},
   "name": "triggered-oz",
