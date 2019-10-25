@@ -97,8 +97,7 @@ contract GelatoUserProxies is Initializable
 /**
  * @title GelatoCoreAccounting
  */
-contract GelatoCoreAccounting is Initializable,
-                                 Ownable,
+contract GelatoCoreAccounting is Ownable,
                                  ReentrancyGuard
 {
     /// @dev non-deploy base contract
@@ -129,6 +128,8 @@ contract GelatoCoreAccounting is Initializable,
         internal
         initializer
     {
+        Ownable.initialize(msg.sender);
+        ReentrancyGuard.initialize();
         gasOutsideGasleftChecks = 40000 + 17331;
         gasInsideGasleftChecks = 100000 - gasOutsideGasleftChecks;
         canExecMaxGas = 100000;
@@ -275,7 +276,7 @@ contract GelatoCore is GelatoUserProxies,
 {
     ///@dev initializer/constructor fn (upgradeability)
     function initialize()
-        external
+        public
         initializer
     {
         GelatoUserProxies._initialize();

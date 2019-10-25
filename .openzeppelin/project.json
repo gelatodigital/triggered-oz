@@ -6,7 +6,9 @@
     "GelatoCore": "GelatoCore",
     "MultiMintForTimeTrigger": "MultiMintForTimeTrigger"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@openzeppelin/contracts-ethereum-package": "^2.3.0"
+  },
   "name": "triggered-oz",
   "version": "1.0.0",
   "compiler": {
