@@ -1,13 +1,13 @@
 pragma solidity ^0.5.10;
 
-import '@openzeppelin/contracts/math/SafeMath.sol';
+import '@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol';
 import '../Interfaces/IGelatoCore.sol';
 
 contract MultiMintForTimeTrigger
 {
     using SafeMath for uint256;
 
-    
+
 
     function multiMint(// gelatoCore.mintExecutionClaim params
                        address _timeTrigger,

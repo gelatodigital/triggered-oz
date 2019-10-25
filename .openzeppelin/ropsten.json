@@ -278,7 +278,7 @@
         },
         {
           "contract": "Ownable",
-          "path": "@openzeppelin/contracts/ownership/Ownable.sol",
+          "path": "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol",
           "label": "_owner",
           "astId": 185,
           "type": "t_address",
@@ -286,7 +286,7 @@
         },
         {
           "contract": "ReentrancyGuard",
-          "path": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+          "path": "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol",
           "label": "_guardCounter",
           "astId": 1000,
           "type": "t_uint256",

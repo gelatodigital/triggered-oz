@@ -7,10 +7,10 @@ import './DappSys/DSGuard.sol';
 import './Interfaces/Triggers-Actions/IGelatoAction.sol';
 import './Interfaces/Triggers-Actions/IGelatoTrigger.sol';
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import '@openzeppelin/contracts/drafts/Counters.sol';
-import '@openzeppelin/contracts/ownership/Ownable.sol';
-import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
-import '@openzeppelin/contracts/math/SafeMath.sol';
+import '@openzeppelin/contracts-ethereum-package/contracts/drafts/Counters.sol';
+import '@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol';
+import '@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol';
+import '@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol';
 
 
 contract GelatoUserProxies is Initializable
