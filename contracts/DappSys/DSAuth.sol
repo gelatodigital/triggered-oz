@@ -1,9 +1,13 @@
 pragma solidity ^0.5.10;
 
 contract DSAuthority {
-    function canCall(
-        address src, address dst, bytes4 sig
-    ) public view returns (bool);
+    function canCall(address src,
+                     address dst,
+                     bytes4 sig
+    )
+        public
+        view
+        returns (bool);
 }
 
 contract DSAuthEvents {

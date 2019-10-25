@@ -28,8 +28,8 @@ contract GelatoUserProxies is Initializable
         initializer
     {
         /// @notice all addresses are for ROPSTEN testing
-        proxyRegistry = IProxyRegistry(address(0x65503e9408baD6FB0B12144cBe5AF28a26169309));
-        guardFactory = IDSGuardFactory(address(0xffaF24bf2F44689ea8Dd3AF35b32DD9cFF5cf0B6));
+        proxyRegistry = IProxyRegistry(0x65503e9408baD6FB0B12144cBe5AF28a26169309);
+        guardFactory = IDSGuardFactory(0xffaF24bf2F44689ea8Dd3AF35b32DD9cFF5cf0B6);
         proxyExecSelector = bytes4(keccak256("execute(address,bytes)"));
     }
 
@@ -103,7 +103,7 @@ contract GelatoCoreAccounting is Initializable,
 {
     /// @dev non-deploy base contract
     constructor() internal {}
-    
+
     using SafeMath for uint256;
 
     //_____________ Gelato ExecutionClaim Economics _______________________
@@ -364,7 +364,7 @@ contract GelatoCore is GelatoUserProxies,
                 );
             } else {
                 DSProxyFactory proxyFactory
-                    = DSProxyFactory(address(0xD105F797EDE92594Ffc1617EB3BAd7d182AeDC25));
+                    = DSProxyFactory(0xD105F797EDE92594Ffc1617EB3BAd7d182AeDC25);
                 require(proxyFactory.isProxy(msg.sender),
                     "GelatoCore.mintExecutionClaim: msg.sender is not a proxy"
                 );

@@ -7,6 +7,8 @@ contract MultiMintForTimeTrigger
 {
     using SafeMath for uint256;
 
+    
+
     function multiMint(// gelatoCore.mintExecutionClaim params
                        address _timeTrigger,
                        uint256 _startTime,  // will be encoded here
@@ -21,13 +23,13 @@ contract MultiMintForTimeTrigger
             payable
         {
             IGelatoCore gelatoCore
-                = IGelatoCore(address(0x3540FFE83b2FE5488E25BBcF3dA2bD6b66c225fE));
+                = IGelatoCore(0x3540FFE83b2FE5488E25BBcF3dA2bD6b66c225fE);
             uint256 mintingDepositPerMint
                 = gelatoCore.getMintingDepositPayable(_action, _selectedExecutor);
             require(msg.value == mintingDepositPerMint.mul(_numberOfMints),
                 "MultiMintTimeBased.multiMint: incorrect msg.value"
             );
-            for (uint256 i; i < _numberOfMints; i++)
+            for (uint256 i = 0; i < _numberOfMints; i++)
             {
                 _startTime = _startTime.add(_intervalSpan.mul(i));
                 bytes memory encodedStartTime = abi.encodePacked(_startTime);
