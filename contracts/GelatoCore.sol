@@ -4,8 +4,8 @@ import './Interfaces/IProxyRegistry.sol';
 import './Interfaces/DappSys/IDSGuardFactory.sol';
 import './DappSys/DSProxy.sol';
 import './DappSys/DSGuard.sol';
-import './Interfaces/IGelatoAction.sol';
-import './Interfaces/IGelatoTrigger.sol';
+import './Interfaces/Triggers-Actions/IGelatoAction.sol';
+import './Interfaces/Triggers-Actions/IGelatoTrigger.sol';
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import '@openzeppelin/contracts/drafts/Counters.sol';
 import '@openzeppelin/contracts/ownership/Ownable.sol';
@@ -15,6 +15,8 @@ import '@openzeppelin/contracts/math/SafeMath.sol';
 
 contract GelatoUserProxies is Initializable
 {
+    constructor() internal {}
+
     IProxyRegistry public proxyRegistry;
     IDSGuardFactory public guardFactory;
 
@@ -347,10 +349,24 @@ contract GelatoCore is GelatoUserProxies,
         onlyRegisteredExecutors(_selectedExecutor)
         nonReentrant
     {
-        address userProxy = address(proxyRegistry.proxies(msg.sender));
-        require(userProxy != address(0),
-            "GelatoCore: user has no proxy"
-        );
+        // ______ Authenticate msg.sender is proxied user or their proxy _______
+        address userProxy;
+        {
+            ///@dev check if msg.sender is a user (EOA)
+            if (msg.sender == tx.origin) {
+                userProxy = address(proxyRegistry.proxies(msg.sender));
+                require(userProxy != address(0),
+                    "GelatoCore.mintExecutionClaim: msg.sender has no proxy"
+                );
+            } else {
+                DSProxyFactory proxyFactory
+                    = DSProxyFactory(address(0xD105F797EDE92594Ffc1617EB3BAd7d182AeDC25));
+                require(proxyFactory.isProxy(msg.sender),
+                    "GelatoCore.mintExecutionClaim: msg.sender is not a proxy"
+                );
+            }
+        }
+        // =============
         // ______ Charge Minting Deposit _______________________________________
         uint256 actionGasStipend = IGelatoAction(_action).getActionGasStipend();
         {
@@ -363,13 +379,11 @@ contract GelatoCore is GelatoUserProxies,
         }
         userProxyDeposit[userProxy] = userProxyDeposit[userProxy].add(msg.value);
         // =============
-
         // ______ Mint new executionClaim ______________________________________
         Counters.increment(executionClaimIds);
         uint256 executionClaimId = executionClaimIds.current();
         userProxyByExecutionClaimId[executionClaimId] = userProxy;
         // =============
-
         // ______ Trigger-Action userProxy.execute Payload encoding ___________
         bytes memory triggerPayload;
         {
@@ -395,7 +409,6 @@ contract GelatoCore is GelatoUserProxies,
             );
         }
         // =============
-
         // ______ ExecutionClaim Hashing ______________________________________
         uint256 executionClaimExpiryDate
             = now.add(executorClaimLifespan[_selectedExecutor]);

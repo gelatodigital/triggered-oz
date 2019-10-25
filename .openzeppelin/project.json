@@ -3,7 +3,8 @@
   "contracts": {
     "TriggerTimestampPassed": "TriggerTimestampPassed",
     "ActionKyberTrade": "ActionKyberTrade",
-    "GelatoCore": "GelatoCore"
+    "GelatoCore": "GelatoCore",
+    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger"
   },
   "dependencies": {},
   "name": "triggered-oz",

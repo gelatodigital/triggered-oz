@@ -155,11 +155,11 @@
       }
     },
     "GelatoCore": {
-      "address": "0x4206e94B8Ea52FA8188a30480BABcec3D484148A",
-      "constructorCode": "60806040525b5b33603560006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550603560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16600073ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a35b600160366000508190909055505b6100d8565b61491b806100e76000396000f3fe",
-      "bodyBytecodeHash": "c8c9b9cbbea52137fd7f6a11c49b7ff317f52dce153cb8dfa13179738e7f91e6",
-      "localBytecodeHash": "0b84006703c097111f2e2c35cbe8a24d2664a840c894a0ceaa76de748020f4fb",
-      "deployedBytecodeHash": "0b84006703c097111f2e2c35cbe8a24d2664a840c894a0ceaa76de748020f4fb",
+      "address": "0xfCEFF965900E97cD07da051EF71fCB1Fb5F1E183",
+      "constructorCode": "60806040525b5b5b5b33603560006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550603560009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16600073ffffffffffffffffffffffffffffffffffffffff167f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e060405160405180910390a35b600160366000508190909055505b6100da565b614ad1806100e96000396000f3fe",
+      "bodyBytecodeHash": "5fd85b7a45d47d028a44bb4c96876bf5b77837f747b1587d136e3d1234c49b0a",
+      "localBytecodeHash": "3c1a4a75453b09fb31de729ad3f00f5c5e53496bedac062965d249d33e1d5dd2",
+      "deployedBytecodeHash": "3c1a4a75453b09fb31de729ad3f00f5c5e53496bedac062965d249d33e1d5dd2",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -254,25 +254,25 @@
           "contract": "GelatoUserProxies",
           "path": "contracts/GelatoCore.sol",
           "label": "proxyRegistry",
-          "astId": 1881,
+          "astId": 1885,
           "type": "t_address",
-          "src": "601:35:14"
+          "src": "666:35:14"
         },
         {
           "contract": "GelatoUserProxies",
           "path": "contracts/GelatoCore.sol",
           "label": "guardFactory",
-          "astId": 1883,
+          "astId": 1887,
           "type": "t_address",
-          "src": "642:35:14"
+          "src": "707:35:14"
         },
         {
           "contract": "GelatoUserProxies",
           "path": "contracts/GelatoCore.sol",
           "label": "proxyExecSelector",
-          "astId": 1885,
+          "astId": 1889,
           "type": "t_bytes4",
-          "src": "684:31:14"
+          "src": "749:31:14"
         },
         {
           "contract": "Ownable",
@@ -294,91 +294,118 @@
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "userProxyDeposit",
-          "astId": 2083,
+          "astId": 2087,
           "type": "t_mapping<t_uint256>",
-          "src": "3745:53:14"
+          "src": "3810:53:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "executorPrice",
-          "astId": 2087,
+          "astId": 2091,
           "type": "t_mapping<t_uint256>",
-          "src": "3804:50:14"
+          "src": "3869:50:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "executorClaimLifespan",
-          "astId": 2091,
+          "astId": 2095,
           "type": "t_mapping<t_uint256>",
-          "src": "3860:58:14"
+          "src": "3925:58:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "executorBalance",
-          "astId": 2095,
+          "astId": 2099,
           "type": "t_mapping<t_uint256>",
-          "src": "3924:52:14"
+          "src": "3989:52:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "gasOutsideGasleftChecks",
-          "astId": 2097,
+          "astId": 2101,
           "type": "t_uint256",
-          "src": "4036:40:14"
+          "src": "4101:40:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "gasInsideGasleftChecks",
-          "astId": 2099,
+          "astId": 2103,
           "type": "t_uint256",
-          "src": "4082:39:14"
+          "src": "4147:39:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "canExecMaxGas",
-          "astId": 2101,
+          "astId": 2105,
           "type": "t_uint256",
-          "src": "4127:30:14"
+          "src": "4192:30:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "proxyExecuteGas",
-          "astId": 2103,
+          "astId": 2107,
           "type": "t_uint256",
-          "src": "4163:32:14"
+          "src": "4228:32:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "executionClaimIds",
-          "astId": 2404,
+          "astId": 2408,
           "type": "t_struct<Counters.Counter>",
-          "src": "9976:42:14"
+          "src": "10041:42:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "userProxyByExecutionClaimId",
-          "astId": 2420,
+          "astId": 2424,
           "type": "t_mapping<t_address>",
-          "src": "10249:63:14"
+          "src": "10314:63:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "hashedExecutionClaims",
-          "astId": 2436,
+          "astId": 2440,
           "type": "t_mapping<t_bytes32>",
-          "src": "10815:57:14"
+          "src": "10880:57:14"
         }
       ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [
+          {
+            "contract": "GelatoCore",
+            "path": "contracts/GelatoCore.sol",
+            "label": "executionClaimIds",
+            "astId": 2408,
+            "type": "t_struct<Counters.Counter>",
+            "src": "10041:42:14"
+          }
+        ],
+        "storageDiff": []
+      }
+    },
+    "MultiMintForTimeTrigger": {
+      "address": "0x6fA1A11A7914ef6e998cbd75702cE8aa04C31570",
+      "constructorCode": "60806040523480156100115760006000fd5b50610017565b610661806100266000396000f3fe",
+      "bodyBytecodeHash": "99b7536556a7279129483c351dc3d89a47796bfe838a9e1333d1142f7fb5ced0",
+      "localBytecodeHash": "fd4173e529c28e4927eb3254915dae1244da9aa91200451fc00b1935e7623620",
+      "deployedBytecodeHash": "fd4173e529c28e4927eb3254915dae1244da9aa91200451fc00b1935e7623620",
+      "types": {},
+      "storage": [],
       "warnings": {
         "hasConstructor": false,
         "hasSelfDestruct": false,
@@ -412,7 +439,16 @@
       {
         "address": "0x3540FFE83b2FE5488E25BBcF3dA2bD6b66c225fE",
         "version": "1.0.0",
-        "implementation": "0x4206e94B8Ea52FA8188a30480BABcec3D484148A",
+        "implementation": "0xfCEFF965900E97cD07da051EF71fCB1Fb5F1E183",
+        "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
+        "kind": "Upgradeable"
+      }
+    ],
+    "triggered-oz/MultiMintForTimeTrigger": [
+      {
+        "address": "0x22Ef77200F1E98EEe9545659F31376ACd718f7Af",
+        "version": "1.0.0",
+        "implementation": "0x6fA1A11A7914ef6e998cbd75702cE8aa04C31570",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }
