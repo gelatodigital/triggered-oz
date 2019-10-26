@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@openzeppelin/contracts-ethereum-package": "^2.3.0",
-    "@openzeppelin/upgrades": "^2.5.3"
+    "@openzeppelin/upgrades": "^2.5.3",
+    "ethers": "^4.0.38",
+    "web3": "^1.2.2"
   }
 }
