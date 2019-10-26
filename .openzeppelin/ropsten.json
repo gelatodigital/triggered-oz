@@ -480,7 +480,7 @@
     ],
     "triggered-oz/GelatoCore": [
       {
-        "address": "0x3540FFE83b2FE5488E25BBcF3dA2bD6b66c225fE",
+        "address": "0x624f09392ae014484a1aB64c6D155A7E2B6998E6",
         "version": "1.0.0",
         "implementation": "0x804714308e2695eA2E0481d6f9dC7a13D3eF1444",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
@@ -491,7 +491,7 @@
       {
         "address": "0x22Ef77200F1E98EEe9545659F31376ACd718f7Af",
         "version": "1.0.0",
-        "implementation": "0x39DEA48d49B92A5D3f3a377210D5b0b0eF46Bcc1",
+        "implementation": "0x91132Df54E626F5a871F7045507a654Ae68eCaC9",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }
