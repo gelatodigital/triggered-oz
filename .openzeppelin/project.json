@@ -4,7 +4,8 @@
     "TriggerTimestampPassed": "TriggerTimestampPassed",
     "ActionKyberTrade": "ActionKyberTrade",
     "GelatoCore": "GelatoCore",
-    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger"
+    "MultiMintForTimeTrigger": "MultiMintForTimeTrigger",
+    "KyberEncoder": "KyberEncoder"
   },
   "dependencies": {
     "@openzeppelin/contracts-ethereum-package": "^2.3.0"

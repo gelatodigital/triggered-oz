@@ -442,11 +442,27 @@
       }
     },
     "MultiMintForTimeTrigger": {
-      "address": "0x91132Df54E626F5a871F7045507a654Ae68eCaC9",
-      "constructorCode": "60806040523480156100115760006000fd5b50610017565b6106d3806100266000396000f3fe",
-      "bodyBytecodeHash": "d789240c275bad54f19dc0969046fc7ac90a17c4b47b67e0715841dfcb6995b6",
-      "localBytecodeHash": "614b90015133a5bde70eb7d2176b670002e2e6d3662ab63b76b3cc68225d2af6",
-      "deployedBytecodeHash": "614b90015133a5bde70eb7d2176b670002e2e6d3662ab63b76b3cc68225d2af6",
+      "address": "0xc1ae61d2242922E2d9B32daFDAaECA1048d1F2D1",
+      "constructorCode": "60806040523480156100115760006000fd5b50610017565b610665806100266000396000f3fe",
+      "bodyBytecodeHash": "c960b4ceee5fa3b2240e894c0708f2ec38ff3e6ef7153a8a9d46dbd2b92cab28",
+      "localBytecodeHash": "18980aa686c89cda80b15e9903a8c5a1f06a90f245ac9f99301cdbb0aae00f76",
+      "deployedBytecodeHash": "18980aa686c89cda80b15e9903a8c5a1f06a90f245ac9f99301cdbb0aae00f76",
+      "types": {},
+      "storage": [],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "KyberEncoder": {
+      "address": "0x48c8BCD7aB7ACf9A485643262D1b0e447C156BA1",
+      "constructorCode": "60806040523480156100115760006000fd5b50610017565b6103b3806100266000396000f3fe",
+      "bodyBytecodeHash": "c7ecda66ff7693816a72048bb17cd34dd9dd229938c66a4e5fa63305f23f9529",
+      "localBytecodeHash": "b8374167b2a45058af1f905022bc304e795f056415f4a57ee0e31513f983ff46",
+      "deployedBytecodeHash": "b8374167b2a45058af1f905022bc304e795f056415f4a57ee0e31513f983ff46",
       "types": {},
       "storage": [],
       "warnings": {
@@ -491,7 +507,16 @@
       {
         "address": "0x22Ef77200F1E98EEe9545659F31376ACd718f7Af",
         "version": "1.0.0",
-        "implementation": "0x91132Df54E626F5a871F7045507a654Ae68eCaC9",
+        "implementation": "0xc1ae61d2242922E2d9B32daFDAaECA1048d1F2D1",
+        "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
+        "kind": "Upgradeable"
+      }
+    ],
+    "triggered-oz/KyberEncoder": [
+      {
+        "address": "0x49572F1ea1d91B287d08307e98e64c7De74153cF",
+        "version": "1.0.0",
+        "implementation": "0x48c8BCD7aB7ACf9A485643262D1b0e447C156BA1",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }

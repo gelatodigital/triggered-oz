@@ -7,8 +7,6 @@ contract MultiMintForTimeTrigger
 {
     using SafeMath for uint256;
 
-    function() external payable {revert("DONT SEND ETH");}
-
     function multiMint(// gelatoCore.mintExecutionClaim params
                        address _timeTrigger,
                        uint256 _startTime,  // will be encoded here
