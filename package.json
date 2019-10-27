@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "executornode:ropsten": "export DEV=DEV; export BLOCK=$BLOCK; npx truffle exec executornode.js --network ropsten"
+    "executornode:ropsten": "export BLOCK=$BLOCK; npx truffle exec executornode.js --network ropsten"
   },
   "keywords": [],
   "author": "",
