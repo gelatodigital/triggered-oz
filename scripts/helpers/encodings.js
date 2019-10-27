@@ -1,5 +1,5 @@
-const Web3 = require("web3");
-const web3 = new Web3(Web3.givenProvider);
+// Javascript Ethereum API Library
+const ethers = require("ethers");
 
 exports.getEncodedActionKyberTradeParams = (
   src,
@@ -7,7 +7,8 @@ exports.getEncodedActionKyberTradeParams = (
   srcAmount,
   minConversionRate
 ) => {
-  let encodedActionParams = web3.eth.abi.encodeParameters(
+  const abiCoder = ethers.utils.defaultAbiCoder;
+  const encodedActionParams = abiCoder.encode(
     ["address", "address", "uint256", "uint256"],
     [src, dest, srcAmount, minConversionRate]
   );
@@ -23,7 +24,7 @@ exports.getMultiMintForTimeTriggerPayloadWithSelector = (
   intervalSpan,
   numberOfMints
 ) => {
-  let encodedMultiMintPayloadWithSelector = web3.eth.abi.encodeFunctionCall(
+  const multiMintABI = [
     {
       name: "multiMint",
       type: "function",
@@ -36,7 +37,11 @@ exports.getMultiMintForTimeTriggerPayloadWithSelector = (
         { type: "uint256", name: "_intervalSpan" },
         { type: "uint256", name: "_numberOfMints" }
       ]
-    },
+    }
+  ];
+  const interface = new ethers.utils.Interface(multiMintABI);
+
+  const encodedMultiMintPayloadWithSelector = interface.functions.multiMint.encode(
     [
       timeTrigger,
       startTime,
@@ -47,5 +52,6 @@ exports.getMultiMintForTimeTriggerPayloadWithSelector = (
       numberOfMints
     ]
   );
+
   return encodedMultiMintPayloadWithSelector;
 };

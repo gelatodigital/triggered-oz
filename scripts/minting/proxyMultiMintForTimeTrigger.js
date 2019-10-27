@@ -79,7 +79,6 @@ const getMultiMintForTimeTriggerPayloadWithSelector = require("../helpers/encodi
 
 // The execution logic
 async function main() {
-  await sleep(10000);
   // Fetch the slippage rate from KyberNetwork and assign it to minConversionRate
   let minConversionRate;
   [_, minConversionRate] = await kyberContract.getExpectedRate(
@@ -116,7 +115,7 @@ async function main() {
   console.log(
     `\t\t Encoded Payload With Selector for multiMint:\n ${MULTI_MINT_PAYLOAD_WITH_SELECTOR}\n`
   );
-
+  await sleep(10000);
   const MINTING_DEPOSIT_PER_MINT = await gelatoCoreContract.getMintingDepositPayable(
     ACTION_KYBER_PROXY_ADDRESS,
     SELECTED_EXECUTOR_ADDRESS

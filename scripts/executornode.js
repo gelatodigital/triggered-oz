@@ -32,7 +32,6 @@ const gelatoCoreContractContract = new ethers.Contract(
   connectedWallet
 );
 
-
 // The block from which we start
 let searchFromBlock = process.env.BLOCK;
 
