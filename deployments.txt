@@ -14,7 +14,7 @@ GuardFactory: 0xffaF24bf2F44689ea8Dd3AF35b32DD9cFF5cf0B6
 
 Gelato
 ------
-GelatoCoreProxy: 0x3540FFE83b2FE5488E25BBcF3dA2bD6b66c225fE
+GelatoCoreProxy: 0x624f09392ae014484a1aB64c6D155A7E2B6998E6
 
 Kyber
 -------
