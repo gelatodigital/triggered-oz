@@ -157,11 +157,11 @@
       }
     },
     "GelatoCore": {
-      "address": "0x804714308e2695eA2E0481d6f9dC7a13D3eF1444",
-      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614e4c8061001e6000396000f3fe",
-      "bodyBytecodeHash": "80e1a0dc0b48a3b03fe709d76d6391f64f0aae72f8874d63d033ee1c1d40c704",
-      "localBytecodeHash": "459a42324930544366099d404d5f9f188dc689d8b167101efae74573483678ff",
-      "deployedBytecodeHash": "459a42324930544366099d404d5f9f188dc689d8b167101efae74573483678ff",
+      "address": "0x9998E4d31440460296C912d74111B9Ef8f0f5429",
+      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614e9e8061001e6000396000f3fe",
+      "bodyBytecodeHash": "dead63d5cbaf45ab5cf926fffbb32938cef68e7f32eb8b73593a40608acbf8fc",
+      "localBytecodeHash": "be179cc09885c0c3d108916bfcce31e528c6c63c40d1e9d4c90e4d04153b8367",
+      "deployedBytecodeHash": "be179cc09885c0c3d108916bfcce31e528c6c63c40d1e9d4c90e4d04153b8367",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -376,25 +376,25 @@
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "executionClaimIds",
-          "astId": 2070,
+          "astId": 2076,
           "type": "t_struct<Counters.Counter>",
-          "src": "10298:42:14"
+          "src": "10339:42:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "userProxyByExecutionClaimId",
-          "astId": 2086,
+          "astId": 2092,
           "type": "t_mapping<t_address>",
-          "src": "10571:63:14"
+          "src": "10612:63:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "hashedExecutionClaims",
-          "astId": 2102,
+          "astId": 2108,
           "type": "t_mapping<t_bytes32>",
-          "src": "11137:57:14"
+          "src": "11178:57:14"
         }
       ],
       "warnings": {
@@ -408,37 +408,12 @@
             "contract": "GelatoCore",
             "path": "contracts/GelatoCore.sol",
             "label": "executionClaimIds",
-            "astId": 2070,
+            "astId": 2076,
             "type": "t_struct<Counters.Counter>",
-            "src": "10298:42:14"
+            "src": "10339:42:14"
           }
         ],
-        "storageDiff": [
-          {
-            "action": "insert",
-            "updated": {
-              "index": 7,
-              "contract": "Ownable",
-              "path": "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol",
-              "label": "______gap",
-              "astId": 331,
-              "type": "t_array:50<t_uint256>",
-              "src": "2471:29:3"
-            }
-          },
-          {
-            "action": "insert",
-            "updated": {
-              "index": 9,
-              "contract": "ReentrancyGuard",
-              "path": "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol",
-              "label": "______gap",
-              "astId": 679,
-              "type": "t_array:50<t_uint256>",
-              "src": "1568:29:7"
-            }
-          }
-        ]
+        "storageDiff": []
       }
     },
     "MultiMintForTimeTrigger": {
@@ -498,7 +473,7 @@
       {
         "address": "0x624f09392ae014484a1aB64c6D155A7E2B6998E6",
         "version": "1.0.0",
-        "implementation": "0x804714308e2695eA2E0481d6f9dC7a13D3eF1444",
+        "implementation": "0x9998E4d31440460296C912d74111B9Ef8f0f5429",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }

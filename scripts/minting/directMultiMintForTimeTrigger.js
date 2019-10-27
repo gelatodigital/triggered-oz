@@ -2,16 +2,21 @@
 const ethers = require("ethers");
 
 // Helpers
-const sleep = require("./sleep.js").sleep;
+const sleep = require("../helpers/sleep.js").sleep;
 
 // Wallet and Provider
 require("dotenv").config();
 const DEV_MNEMONIC = process.env.DEV_MNEMONIC;
 const INFURA_ID = process.env.INFURA_ID;
+console.log(
+  `\n\t env variables configured: ${assert.ok(DEV_MNEMONIC) &&
+    assert.ok(INFURA_ID)}`
+);
 
 // Contract Addresses for instantiation
 const MULTI_MINT_PROXY_ADDRESS = "0x22ef77200f1e98eee9545659f31376acd718f7af";
 const KYBER_PROXY_ADDRESS = "0x818E6FECD516Ecc3849DAf6845e3EC868087B755";
+const GELATO_CORE_ADDRESS = "0x624f09392ae014484a1aB64c6D155A7E2B6998E6";
 
 // Arguments for function call to multiMintProxy.multiMint()
 const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
@@ -32,7 +37,7 @@ const wallet = ethers.Wallet.fromMnemonic(DEV_MNEMONIC);
 const connectedWallet = wallet.connect(provider);
 
 // Read-Write Instance of MultiMintContract
-const multiMintABI = require("./build/contracts/MultiMintForTimeTrigger.json")
+const multiMintABI = require("../../build/contracts/MultiMintForTimeTrigger.json")
   .abi;
 const multiMintContract = new ethers.Contract(
   MULTI_MINT_PROXY_ADDRESS,
@@ -40,18 +45,28 @@ const multiMintContract = new ethers.Contract(
   connectedWallet
 );
 
-// Read-Write Instance of KyberContract
+// Read Instance of KyberContract
 const kyberABI = [
   "function getExpectedRate(address SRC, address DEST, uint srcQty) view returns(uint,uint)"
 ];
 const kyberContract = new ethers.Contract(
   KYBER_PROXY_ADDRESS,
   kyberABI,
-  connectedWallet
+  provider
+);
+
+// ReadInstance of GelatoCore
+const gelatoCoreABI = [
+  "function getMintingDepositPayable(address _action, address _selectedExecutor) view returns(uint)"
+];
+const gelatoCoreContract = new ethers.Contract(
+  GELATO_CORE_ADDRESS,
+  gelatoCoreABI,
+  provider
 );
 
 // ABI encoding function
-const getEncodedActionKyberTradeParams = require("./encodings.js")
+const getEncodedActionKyberTradeParams = require("../helpers/encodings.js")
   .getEncodedActionKyberTradeParams;
 
 // The execution logic
@@ -77,10 +92,27 @@ async function main() {
     SRC_AMOUNT,
     minConversionRate
   );
-
   console.log(`\t EncodedActionParams: ${ENCODED_ACTION_PARAMS}\n`);
 
-  // multiMint call
+  const MINTING_DEPOSIT_PER_MINT = await gelatoCoreContract.getMintingDepositPayable(
+    ACTION_KYBER_PROXY_ADDRESS,
+    SELECTED_EXECUTOR_ADDRESS
+  );
+  console.log(
+    `\n\t\t Minting Deposit Per Mint: ${ethers.utils.formatUnits(
+      MINTING_DEPOSIT_PER_MINT,
+      "ether"
+    )} ETH`
+  );
+  const MSG_VALUE = MINTING_DEPOSIT_PER_MINT.mul(NUMBER_OF_MINTS);
+  console.log(
+    `\n\t\t Minting Deposit for ${NUMBER_OF_MINTS} mints: ${ethers.utils.formatUnits(
+      MSG_VALUE,
+      "ether"
+    )} ETH \n`
+  );
+
+  // send tx to PAYABLE contract method
   let tx = await multiMintContract.multiMint(
     TRIGGER_TIME_PROXY_ADDRESS,
     START_TIME,
@@ -88,10 +120,15 @@ async function main() {
     ENCODED_ACTION_PARAMS,
     SELECTED_EXECUTOR_ADDRESS,
     INTERVAL_SPAN,
-    NUMBER_OF_MINTS
+    NUMBER_OF_MINTS,
+    { value: MSG_VALUE, gasLimit: 2000000 }
   );
 
-  console.log(`\tmultiMint txHash: ${tx}`);
+  console.log(`\tmultiMint txHash: ${tx.hash}`);
+
+  // The operation is NOT complete yet; we must wait until it is mined
+  console.log("\t\n waiting for transaction to get mined \n");
+  await tx.wait();
 }
 
 // What to execute when running node

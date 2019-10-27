@@ -141,7 +141,7 @@ contract GelatoCoreAccounting is Ownable,
      * @param _executor: the address to be checked against executor registrations
      */
     modifier onlyRegisteredExecutors(address _executor) {
-        require(executorPrice[_executor] != 0,
+        require(executorPrice[_executor] != 0 && executorClaimLifespan[_executor] != 0,
             "GelatoCoreAccounting.onlyRegisteredExecutors: failed"
         );
         _;
@@ -231,13 +231,13 @@ contract GelatoCoreAccounting is Ownable,
         executorPrice[msg.sender] = _newExecutorGasPrice;
     }
 
-    event LogSetExecutorClaimLigespan(uint256 executorClaimLifespan,
+    event LogSetExecutorClaimLifespan(uint256 executorClaimLifespan,
                                       uint256 newExecutorClaimLifespan
     );
     function setExecutorClaimLifespan(uint256 _newExecutorClaimLifespan)
         external
     {
-        emit LogSetExecutorClaimLigespan(executorClaimLifespan[msg.sender],
+        emit LogSetExecutorClaimLifespan(executorClaimLifespan[msg.sender],
                                          _newExecutorClaimLifespan
         );
         executorClaimLifespan[msg.sender] = _newExecutorClaimLifespan;
