@@ -2,7 +2,8 @@
 const ethers = require("ethers");
 
 // Wallet and Provider
-require("dotenv").config();
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 const DEV_MNEMONIC = process.env.DEV_MNEMONIC;
 const INFURA_ID = process.env.INFURA_ID;
 
