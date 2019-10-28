@@ -64,6 +64,11 @@ async function queryChainAndExecute() {
   // Fetch minted and not burned executionClaims
   let mintedClaims = {};
 
+  // add this handler before emitting any events
+  process.on("uncaughtException", err => {
+    console.log("UNCAUGHT EXCEPTION - keeping process alive:", err);
+  });
+
   // Get LogNewExecutionClaimMinted return values
   gelatoCoreContract.on(
     "LogNewExecutionClaimMinted",
@@ -113,7 +118,6 @@ async function queryChainAndExecute() {
     console.log(`\n\t\tLogExecutionClaimCancelled: ${executionClaimId}\n`);
   });
 
-
   await sleep(20000);
 
   // Log available executionClaims
@@ -140,16 +144,21 @@ async function queryChainAndExecute() {
       `\n\tCheck if ExeutionClaim ${executionClaimId} is executable\n`
     );
     // Call canExecute
-    canExecuteReturn = await gelatoCoreContract.canExecute(
-      mintedClaims[executionClaimId].trigger,
-      mintedClaims[executionClaimId].triggerPayload,
-      mintedClaims[executionClaimId].userProxy,
-      mintedClaims[executionClaimId].executePayload,
-      mintedClaims[executionClaimId].executeGas,
-      mintedClaims[executionClaimId].executionClaimId,
-      mintedClaims[executionClaimId].executionClaimExpiryDate,
-      mintedClaims[executionClaimId].executorFee
-    );
+    try {
+      canExecuteReturn = await gelatoCoreContract.canExecute(
+        mintedClaims[executionClaimId].trigger,
+        mintedClaims[executionClaimId].triggerPayload,
+        mintedClaims[executionClaimId].userProxy,
+        mintedClaims[executionClaimId].executePayload,
+        mintedClaims[executionClaimId].executeGas,
+        mintedClaims[executionClaimId].executionClaimId,
+        mintedClaims[executionClaimId].executionClaimExpiryDate,
+        mintedClaims[executionClaimId].executorFee
+      );
+    } catch (err) {
+      console.log(err);
+    }
+
     const canExecuteResults = [
       "WrongCalldataOrAlreadyDeleted",
       "UserProxyOutOfFunds",
@@ -171,23 +180,32 @@ async function queryChainAndExecute() {
         🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
     `);
       console.log(`⚡⚡⚡ Send TX ⚡⚡⚡\n`);
-      let tx = await gelatoCoreContract.execute(
-        mintedClaims[executionClaimId].trigger,
-        mintedClaims[executionClaimId].triggerPayload,
-        mintedClaims[executionClaimId].userProxy,
-        mintedClaims[executionClaimId].executePayload,
-        mintedClaims[executionClaimId].executeGas,
-        mintedClaims[executionClaimId].executionClaimId,
-        mintedClaims[executionClaimId].executionClaimExpiryDate,
-        mintedClaims[executionClaimId].executorFee,
-        {
-          gasLimit: 1000000
-        }
-      );
+      let tx;
+      try {
+        tx = await gelatoCoreContract.execute(
+          mintedClaims[executionClaimId].trigger,
+          mintedClaims[executionClaimId].triggerPayload,
+          mintedClaims[executionClaimId].userProxy,
+          mintedClaims[executionClaimId].executePayload,
+          mintedClaims[executionClaimId].executeGas,
+          mintedClaims[executionClaimId].executionClaimId,
+          mintedClaims[executionClaimId].executionClaimExpiryDate,
+          mintedClaims[executionClaimId].executorFee,
+          {
+            gasLimit: 1000000
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
       console.log(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
       // The operation is NOT complete yet; we must wait until it is mined
       console.log("\t\t waiting for the execute transaction to get mined \n");
-      await tx.wait();
+      try {
+        await tx.wait();
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       console.log(
         `❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`

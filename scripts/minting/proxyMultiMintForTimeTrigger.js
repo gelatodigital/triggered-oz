@@ -61,7 +61,7 @@ const TARGET_ADDRESS = MULTI_MINT_IMPL_ADDRESS;
 // Arguments for function call to multiMintProxy.multiMint()
 const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
 const START_TIME = Date.now();
-const ACTION_KYBER_PROXY_ADDRESS = "0x8710aF1bC86a569c18Ec5b41A656B3aA9Eca9037";
+const ACTION_KYBER_IMPL_ADDRESS = "0x6449992895c36BE20b356D85E3A1411135D46a7b";
 // Specific Action Params: encoded during main() execution
 const SRC = "0x4E470dc7321E84CA96FcAEDD0C8aBCebbAEB68C6"; // ropsten knc
 const DEST = "0xaD6D458402F60fD3Bd25163575031ACDce07538D"; // ropsten dai
@@ -69,7 +69,7 @@ const SRC_AMOUNT = ethers.utils.bigNumberify((10e18).toString());
 // minConversionRate async fetched from KyberNetwork during main() execution
 const SELECTED_EXECUTOR_ADDRESS = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
 const INTERVAL_SPAN = "300"; // 300 seconds
-const NUMBER_OF_MINTS = "3";
+const NUMBER_OF_MINTS = "1";
 
 // ABI encoding function
 const getEncodedActionKyberTradeParams = require("../helpers/encodings.js")
@@ -106,7 +106,7 @@ async function main() {
   const MULTI_MINT_PAYLOAD_WITH_SELECTOR = getMultiMintForTimeTriggerPayloadWithSelector(
     TRIGGER_TIME_PROXY_ADDRESS,
     START_TIME,
-    ACTION_KYBER_PROXY_ADDRESS,
+    ACTION_KYBER_IMPL_ADDRESS,
     ENCODED_ACTION_PARAMS,
     SELECTED_EXECUTOR_ADDRESS,
     INTERVAL_SPAN,
@@ -124,7 +124,7 @@ async function main() {
     ethUSDPrice = price;
   });
   const MINTING_DEPOSIT_PER_MINT = await gelatoCoreContract.getMintingDepositPayable(
-    ACTION_KYBER_PROXY_ADDRESS,
+    ACTION_KYBER_IMPL_ADDRESS,
     SELECTED_EXECUTOR_ADDRESS
   );
   console.log(
@@ -132,31 +132,45 @@ async function main() {
       MINTING_DEPOSIT_PER_MINT,
       "ether"
     )} ETH \t\t${ethUSDPrice *
-      parseFloat(ethers.utils.formatUnits(MINTING_DEPOSIT_PER_MINT, "ether"))} $`
+      parseFloat(
+        ethers.utils.formatUnits(MINTING_DEPOSIT_PER_MINT, "ether")
+      )} $`
   );
   const MSG_VALUE = MINTING_DEPOSIT_PER_MINT.mul(NUMBER_OF_MINTS);
   console.log(
     `\n\t\t Minting Deposit for ${NUMBER_OF_MINTS} mints: ${ethers.utils.formatUnits(
       MSG_VALUE,
       "ether"
-    )} ETH \t\t ${ethUSDPrice *
+    )} ETH \t ${ethUSDPrice *
       parseFloat(ethers.utils.formatUnits(MSG_VALUE, "ether"))} $`
   );
 
   // send tx to PAYABLE contract method
-  let tx = await userProxyContract.execute(
-    TARGET_ADDRESS,
-    MULTI_MINT_PAYLOAD_WITH_SELECTOR,
-    { value: MSG_VALUE, gasLimit: 2000000 }
-  );
-
+  let tx;
+  try {
+    tx = await userProxyContract.execute(
+      TARGET_ADDRESS,
+      MULTI_MINT_PAYLOAD_WITH_SELECTOR,
+      {
+        value: MSG_VALUE,
+        gasLimit: 2000000
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
   console.log(
     `\n\t\t userProxy.execute(multiMintForTimeTrigger) txHash:\n \t${tx.hash}`
   );
 
   // The operation is NOT complete yet; we must wait until it is mined
   console.log("\n\t\t waiting for transaction to get mined \n");
-  await tx.wait();
+  try {
+    await tx.wait();
+  } catch (err) {
+    console.log(err);
+  }
+  console.log(`\n\t\t minting tx mined in block ${tx.blockNumber}`);
 }
 
 // What to execute when running node
