@@ -59,8 +59,8 @@ const MULTI_MINT_IMPL_ADDRESS = "0x83a9a1B430e1d738D85859B9Ec509426b4B36058";
 const TARGET_ADDRESS = MULTI_MINT_IMPL_ADDRESS;
 
 // Arguments for function call to multiMintProxy.multiMint()
-const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
-const START_TIME = Date.now();
+const TRIGGER_TIME_PROXY_ADDRESS = "0xb770523a097FC75ae35cB671A9bD423985404f4c";
+const START_TIME = Math.floor(Date.now() / 1000);
 const ACTION_KYBER_IMPL_ADDRESS = "0x088A7a91140CD0A95a6A6Cc6d6c2cBf760F584B6";
 // Specific Action Params: encoded during main() execution
 const USER = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
@@ -104,10 +104,12 @@ async function main() {
   );
   console.log(`\t\t EncodedActionParams: \n ${ACTION_KYBER_PAYLOAD}\n`);
 
+  console.log(`START TIME: ${START_TIME}`);
+
   // Encode the payload for the call to MultiMintForTimeTrigger.multiMint
   const MULTI_MINT_PAYLOAD_WITH_SELECTOR = getMultiMintForTimeTriggerPayloadWithSelector(
     TRIGGER_TIME_PROXY_ADDRESS,
-    START_TIME,
+    START_TIME.toString(),
     ACTION_KYBER_IMPL_ADDRESS,
     ACTION_KYBER_PAYLOAD,
     SELECTED_EXECUTOR_ADDRESS,

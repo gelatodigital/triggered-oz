@@ -24,9 +24,9 @@ const GELATO_CORE_ADDRESS = "0x624f09392ae014484a1aB64c6D155A7E2B6998E6";
 
 // Read-Write Instance of GelatoCore
 const gelatoCoreContractABI = [
-  "function canExecute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _executePayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) view returns (uint8)",
-  "function execute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _executePayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) returns (uint8 executionResult)",
-  "event LogNewExecutionClaimMinted(address indexed selectedExecutor, uint256 indexed executionClaimId, address indexed userProxy, bytes executePayload, uint256 executeGas, uint256 executionClaimExpiryDate, uint256 executorFee)",
+  "function canExecute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _actionPayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) view returns (uint8)",
+  "function execute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _actionPayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) returns (uint8 executionResult)",
+  "event LogNewExecutionClaimMinted(address indexed selectedExecutor, uint256 indexed executionClaimId, address indexed userProxy, bytes actionPayload, uint256 executeGas, uint256 executionClaimExpiryDate, uint256 executorFee)",
   "event LogTriggerActionMinted(uint256 indexed executionClaimId, address indexed trigger, bytes triggerPayload, address indexed action)",
   "event LogClaimExecutedAndDeleted(uint256 indexed executionClaimId, address indexed userProxy, address indexed executor, uint256 gasUsedEstimate, uint256 gasPriceUsed, uint256 executionCostEstimate, uint256 executorPayout)",
   "event LogExecutionClaimCancelled(uint256 indexed executionClaimId, address indexed userProxy, address indexed cancelor)"
@@ -47,7 +47,7 @@ if (searchFromBlock === "") {
 // This gets executed with node
 async function main() {
   queryChainAndExecute();
-  setInterval(queryChainAndExecute, 120 * 1000);
+  setInterval(queryChainAndExecute, 20 * 1000);
 }
 main().catch(err => console.log(err));
 
@@ -62,75 +62,110 @@ async function queryChainAndExecute() {
   provider.resetEventsBlock(searchFromBlock);
 
   // Fetch minted and not burned executionClaims
-  let mintedClaims = {};
+  const mintedClaims = {};
 
   // add this handler before emitting any events
   process.on("uncaughtException", err => {
     console.log("UNCAUGHT EXCEPTION - keeping process alive:", err);
   });
 
-  // Get LogNewExecutionClaimMinted return values
-  gelatoCoreContract.on(
-    "LogNewExecutionClaimMinted",
-    (
-      selectedExecutor,
-      executionClaimId,
-      userProxy,
-      executePayload,
-      executeGas,
-      executionClaimExpiryDate,
-      executorFee
-    ) => {
-      console.log(
-        `\t\tLogNewExecutionClaimMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
-      );
-      mintedClaims[executionClaimId.toString()] = {
-        selectedExecutor: selectedExecutor,
-        executionClaimId: executionClaimId,
-        userProxy: userProxy,
-        executePayload: executePayload,
-        executeGas: executeGas,
-        executionClaimExpiryDate: executionClaimExpiryDate,
-        executorFee: executorFee
-      };
-    }
+  // Log Parsing
+  let iface = new ethers.utils.Interface(gelatoCoreContractABI);
+
+  // LogNewExecutionClaimMinted
+  let topicMinted = ethers.utils.id(
+    "LogNewExecutionClaimMinted(address,uint256,address,bytes,uint256,uint256,uint256)"
   );
-  // Get LogTriggerActionMinted return values
-  gelatoCoreContract.on(
-    "LogTriggerActionMinted",
-    (executionClaimId, trigger, triggerPayload, action) => {
-      mintedClaims[executionClaimId.toString()].trigger = trigger;
-      mintedClaims[executionClaimId.toString()].triggerPayload = triggerPayload;
-      mintedClaims[executionClaimId.toString()].action = action;
-      console.log(
-        `\t\tLogTriggerActionMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
-      );
-    }
+  let filterMinted = {
+    address: GELATO_CORE_ADDRESS,
+    fromBlock: parseInt(searchFromBlock),
+    topics: [topicMinted]
+  };
+  const logsMinted = await provider.getLogs(filterMinted);
+  logsMinted.forEach(log => {
+    const parsedLog = iface.parseLog(log);
+    const executionClaimId = parsedLog.values.executionClaimId.toString();
+    console.log(
+      `\t\tLogNewExecutionClaimMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
+    );
+    mintedClaims[executionClaimId] = {
+      selectedExecutor: parsedLog.values.selectedExecutor,
+      executionClaimId: executionClaimId,
+      userProxy: parsedLog.values.userProxy,
+      actionPayload: parsedLog.values.actionPayload,
+      executeGas: parsedLog.values.executeGas,
+      executionClaimExpiryDate: parsedLog.values.executionClaimExpiryDate,
+      executorFee: parsedLog.values.executorFee
+    };
+  });
+
+  // LogTriggerActionMinted
+  let topicTAMinted = ethers.utils.id(
+    "LogTriggerActionMinted(uint256,address,bytes,address)"
   );
-  // Check which execution claims already got executed and remove then from the list
-  gelatoCoreContract.on("LogClaimExecutedAndDeleted", executionClaimId => {
-    for (let key of Object.keys(mintedClaims[executionClaimId.toString()])) {
-      delete mintedClaims[executionClaimId.toString()][key];
+  let filterTAMinted = {
+    address: GELATO_CORE_ADDRESS,
+    fromBlock: parseInt(searchFromBlock),
+    topics: [topicTAMinted]
+  };
+  const logsTAMinted = await provider.getLogs(filterTAMinted);
+  logsTAMinted.forEach(log => {
+    const parsedLog = iface.parseLog(log);
+    const executionClaimId = parsedLog.values.executionClaimId.toString();
+    console.log(
+      `\t\tLogTriggerActionMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
+    );
+    mintedClaims[executionClaimId].trigger = parsedLog.values.trigger;
+    mintedClaims[executionClaimId].triggerPayload =
+      parsedLog.values.triggerPayload;
+    mintedClaims[executionClaimId].action = parsedLog.values.action;
+  });
+
+  // LogClaimExecutedAndDeleted
+  let topicDeleted = ethers.utils.id(
+    "LogClaimExecutedAndDeleted(uint256,address,address,uint256,uint256,uint256,uint256)"
+  );
+  let filterDeleted = {
+    address: GELATO_CORE_ADDRESS,
+    fromBlock: parseInt(searchFromBlock),
+    topics: [topicDeleted]
+  };
+  const logsDeleted = await provider.getLogs(filterDeleted);
+  logsDeleted.forEach(log => {
+    const parsedLog = iface.parseLog(log);
+    const executionClaimId = parsedLog.values.executionClaimId.toString();
+    for (let key of Object.keys(mintedClaims[executionClaimId])) {
+      delete mintedClaims[executionClaimId][key];
     }
     console.log(
       `\n\t\t LogClaimExecutedBurnedAndDeleted: ${executionClaimId} ${Object.keys(
-        mintedClaims[executionClaimId.toString()]
-      ).length === 0}`
-    );
-  });
-  // Check which execution claims already got cancelled and remove then from the list
-  gelatoCoreContract.on("LogExecutionClaimCancelled", executionClaimId => {
-    for (let key of Object.keys(mintedClaims[executionClaimId.toString()])) {
-      delete mintedClaims[executionClaimId.toString()][key];
-    }
-    console.log(
-      `\n\t\t LogExecutionClaimCancelled: ${executionClaimId} ${Object.keys(
-        mintedClaims[executionClaimId.toString()]
+        mintedClaims[executionClaimId]
       ).length === 0}`
     );
   });
 
-  await sleep(10000);
+  // LogExecutionClaimCancelled
+  let topicCancelled = ethers.utils.id(
+    "LogExecutionClaimCancelled(uint256,address,address)"
+  );
+  let filterCancelled = {
+    address: GELATO_CORE_ADDRESS,
+    fromBlock: parseInt(searchFromBlock),
+    topics: [topicCancelled]
+  };
+  const logsCancelled = await provider.getLogs(filterCancelled);
+  logsCancelled.forEach(log => {
+    const parsedLog = iface.parseLog(log);
+    const executionClaimId = parsedLog.values.executionClaimId.toString();
+    for (let key of Object.keys(mintedClaims[executionClaimId])) {
+      delete mintedClaims[executionClaimId][key];
+    }
+    console.log(
+      `\n\t\t LogExecutionClaimCancelled: ${executionClaimId} ${Object.keys(
+        mintedClaims[executionClaimId]
+      ).length === 0}`
+    );
+  });
 
   // Log available executionClaims
   console.log("\n\n\t\t Available ExecutionClaims:");
@@ -140,13 +175,7 @@ async function queryChainAndExecute() {
     }
     console.log("\n");
   }
-  await sleep(2000);
-
-  // Reset the searchFromBlock
-  searchFromBlock = currentBlock - 2;
-  console.log(
-    `\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
-  );
+  await sleep(10000);
 
   // Loop through all execution claims and check if they are executable.
   //  If yes, execute, if not, skip
@@ -161,7 +190,7 @@ async function queryChainAndExecute() {
         mintedClaims[executionClaimId].trigger,
         mintedClaims[executionClaimId].triggerPayload,
         mintedClaims[executionClaimId].userProxy,
-        mintedClaims[executionClaimId].executePayload,
+        mintedClaims[executionClaimId].actionPayload,
         mintedClaims[executionClaimId].executeGas,
         mintedClaims[executionClaimId].executionClaimId,
         mintedClaims[executionClaimId].executionClaimExpiryDate,
@@ -198,7 +227,7 @@ async function queryChainAndExecute() {
           mintedClaims[executionClaimId].trigger,
           mintedClaims[executionClaimId].triggerPayload,
           mintedClaims[executionClaimId].userProxy,
-          mintedClaims[executionClaimId].executePayload,
+          mintedClaims[executionClaimId].actionPayload,
           mintedClaims[executionClaimId].executeGas,
           mintedClaims[executionClaimId].executionClaimId,
           mintedClaims[executionClaimId].executionClaimExpiryDate,
@@ -223,5 +252,10 @@ async function queryChainAndExecute() {
         `❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
       );
     }
+    // Reset the searchFromBlock
+    searchFromBlock = currentBlock - 2;
+    console.log(
+      `\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
+    );
   }
 }
