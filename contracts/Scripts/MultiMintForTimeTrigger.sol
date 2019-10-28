@@ -2,6 +2,7 @@ pragma solidity ^0.5.10;
 
 import '@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol';
 import '../Interfaces/IGelatoCore.sol';
+import '../Interfaces/Triggers-Actions/IGelatoTrigger.sol';
 
 contract MultiMintForTimeTrigger
 {
@@ -30,11 +31,12 @@ contract MultiMintForTimeTrigger
             for (uint256 i = 0; i < _numberOfMints; i++)
             {
                 _startTime = _startTime.add(_intervalSpan.mul(i));
-                bytes memory encodedStartTime = abi.encodePacked(_startTime);
+                bytes4 triggerSelector = IGelatoTrigger(_timeTrigger).getTriggerSelector();
+                bytes memory triggerPayload = abi.encodeWithSelector(triggerSelector,_startTime);
                 gelatoCore.mintExecutionClaim
                           .value(mintingDepositPerMint)
                           (_timeTrigger,
-                           encodedStartTime,
+                           triggerPayload,
                            _action,
                            _actionPayload,
                            _selectedExecutor

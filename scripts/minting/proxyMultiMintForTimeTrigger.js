@@ -55,11 +55,11 @@ const userProxyContract = new ethers.Contract(
 );
 
 // Arguments for userProxy.execute(address target, bytes memory data)
-const MULTI_MINT_IMPL_ADDRESS = "0x83a9a1B430e1d738D85859B9Ec509426b4B36058";
+const MULTI_MINT_IMPL_ADDRESS = "0x7c1ee20D51441930665A316583784cd140ABF84b";
 const TARGET_ADDRESS = MULTI_MINT_IMPL_ADDRESS;
 
 // Arguments for function call to multiMintProxy.multiMint()
-const TRIGGER_TIME_PROXY_ADDRESS = "0xb770523a097FC75ae35cB671A9bD423985404f4c";
+const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
 const START_TIME = Math.floor(Date.now() / 1000);
 const ACTION_KYBER_IMPL_ADDRESS = "0x088A7a91140CD0A95a6A6Cc6d6c2cBf760F584B6";
 // Specific Action Params: encoded during main() execution
@@ -103,8 +103,6 @@ async function main() {
     minConversionRate
   );
   console.log(`\t\t EncodedActionParams: \n ${ACTION_KYBER_PAYLOAD}\n`);
-
-  console.log(`START TIME: ${START_TIME}`);
 
   // Encode the payload for the call to MultiMintForTimeTrigger.multiMint
   const MULTI_MINT_PAYLOAD_WITH_SELECTOR = getMultiMintForTimeTriggerPayloadWithSelector(

@@ -35,7 +35,6 @@ contract ActionKyberTrade is GelatoActionsStandard
                   bool userApproved,
                   bool kyberApproved
     );
-    event LogSuccess(bool success);
 
     function action(///@dev ONLY ENCODE this NO SELECTOR
                     address _user,
@@ -54,19 +53,18 @@ contract ActionKyberTrade is GelatoActionsStandard
         ///@notice in context of .delegatecall address(this) is the userProxy
         IERC20 srcERC20 = IERC20(_src);
 
-        //bool userApproved = srcERC20._hasERC20Allowance(owner, address(this), _srcAmt);
-        emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, true, true);
+        //bool userApproved = srcERC20._hasERC20Allowance(_user, address(this), _srcAmt);
+        //emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, true, true);
 
-        /*// Make sure kyber contract is MAX-approved by userProxy
+        // Make sure kyber contract is MAX-approved by userProxy
         if (!srcERC20._hasERC20Allowance(address(this), kyber, _srcAmt))
         {
             srcERC20._safeIncreaseERC20Allowance(kyber, 2**255);
-        }*/
-
+        }
 
         // Transfer funds from user to their userProxy
         ///@notice this requires users to have approved the userProxy beforehand
-        /*srcERC20._safeTransferFrom(_user, address(this), _srcAmt);
+        srcERC20._safeTransferFrom(_user, address(this), _srcAmt);
 
         ///@notice .call action - msg.sender is userProxy (address(this))
         destAmt = IKyber(kyber).trade(_src,
@@ -87,6 +85,6 @@ contract ActionKyberTrade is GelatoActionsStandard
                       _user,
                       _minConversionRate,
                       address(0)  // fee-sharing
-        );*/
+        );
     }
 }

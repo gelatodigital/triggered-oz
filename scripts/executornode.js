@@ -47,9 +47,12 @@ if (searchFromBlock === "") {
 // This gets executed with node
 async function main() {
   queryChainAndExecute();
-  setInterval(queryChainAndExecute, 20 * 1000);
+  setInterval(queryChainAndExecute, 120 * 1000);
 }
 main().catch(err => console.log(err));
+
+// Fetch minted and not burned executionClaims
+let mintedClaims = {};
 
 // The logic that gets executed from inside main()
 async function queryChainAndExecute() {
@@ -57,12 +60,6 @@ async function queryChainAndExecute() {
   console.log(`\n\t\t Starting from block number: ${searchFromBlock}`);
   console.log(`\n\t\t Current block number:       ${searchFromBlock}`);
   console.log(`\n\t\t Running Executor Node from: ${wallet.address}\n`);
-
-  // Set providers event search to searchFromBlock
-  provider.resetEventsBlock(searchFromBlock);
-
-  // Fetch minted and not burned executionClaims
-  const mintedClaims = {};
 
   // add this handler before emitting any events
   process.on("uncaughtException", err => {
@@ -181,11 +178,9 @@ async function queryChainAndExecute() {
   //  If yes, execute, if not, skip
   let canExecuteReturn;
   for (let executionClaimId in mintedClaims) {
-    console.log(
-      `\n\tCheck if ExeutionClaim ${executionClaimId} is executable\n`
-    );
     // Call canExecute
     try {
+      console.log(executionClaimId);
       canExecuteReturn = await gelatoCoreContract.canExecute(
         mintedClaims[executionClaimId].trigger,
         mintedClaims[executionClaimId].triggerPayload,
@@ -220,7 +215,7 @@ async function queryChainAndExecute() {
       console.log(`
         🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
     `);
-      console.log(`⚡⚡⚡ Send TX ⚡⚡⚡\n`);
+      console.log(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
       let tx;
       try {
         tx = await gelatoCoreContract.execute(
@@ -249,13 +244,13 @@ async function queryChainAndExecute() {
       }
     } else {
       console.log(
-        `❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
+        `\t\t❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
       );
     }
     // Reset the searchFromBlock
     searchFromBlock = currentBlock - 2;
     console.log(
-      `\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
+      `\n\n\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
     );
   }
 }
