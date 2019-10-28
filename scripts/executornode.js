@@ -109,13 +109,25 @@ async function queryChainAndExecute() {
   );
   // Check which execution claims already got executed and remove then from the list
   gelatoCoreContract.on("LogClaimExecutedAndDeleted", executionClaimId => {
-    delete mintedClaims[executionClaimId.toString()];
-    console.log(`\n\t\tLogClaimExecutedBurnedAndDeleted: ${executionClaimId}`);
+    for (let key of Object.keys(mintedClaims[executionClaimId.toString()])) {
+      delete mintedClaims[executionClaimId.toString()][key];
+    }
+    console.log(
+      `\n\t\t LogClaimExecutedBurnedAndDeleted: ${executionClaimId} ${Object.keys(
+        mintedClaims[executionClaimId.toString()]
+      ).length === 0}`
+    );
   });
   // Check which execution claims already got cancelled and remove then from the list
   gelatoCoreContract.on("LogExecutionClaimCancelled", executionClaimId => {
-    delete mintedClaims[executionClaimId.toString()];
-    console.log(`\n\t\tLogExecutionClaimCancelled: ${executionClaimId}\n`);
+    for (let key of Object.keys(mintedClaims[executionClaimId.toString()])) {
+      delete mintedClaims[executionClaimId.toString()][key];
+    }
+    console.log(
+      `\n\t\t LogExecutionClaimCancelled: ${executionClaimId} ${Object.keys(
+        mintedClaims[executionClaimId.toString()]
+      ).length === 0}`
+    );
   });
 
   await sleep(20000);
