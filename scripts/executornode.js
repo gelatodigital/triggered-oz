@@ -25,7 +25,7 @@ const GELATO_CORE_ADDRESS = "0x624f09392ae014484a1aB64c6D155A7E2B6998E6";
 // Read-Write Instance of GelatoCore
 const gelatoCoreContractABI = [
   "function canExecute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _actionPayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) view returns (uint8)",
-  "function execute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _actionPayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) returns (uint8 executionResult)",
+  "function execute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _actionPayload, address _action, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) returns (uint8 executionResult)",
   "event LogNewExecutionClaimMinted(address indexed selectedExecutor, uint256 indexed executionClaimId, address indexed userProxy, bytes actionPayload, uint256 executeGas, uint256 executionClaimExpiryDate, uint256 executorFee)",
   "event LogTriggerActionMinted(uint256 indexed executionClaimId, address indexed trigger, bytes triggerPayload, address indexed action)",
   "event LogClaimExecutedAndDeleted(uint256 indexed executionClaimId, address indexed userProxy, address indexed executor, uint256 gasUsedEstimate, uint256 gasPriceUsed, uint256 executionCostEstimate, uint256 executorPayout)",
@@ -180,7 +180,6 @@ async function queryChainAndExecute() {
   for (let executionClaimId in mintedClaims) {
     // Call canExecute
     try {
-      console.log(executionClaimId);
       canExecuteReturn = await gelatoCoreContract.canExecute(
         mintedClaims[executionClaimId].trigger,
         mintedClaims[executionClaimId].triggerPayload,
@@ -223,12 +222,13 @@ async function queryChainAndExecute() {
           mintedClaims[executionClaimId].triggerPayload,
           mintedClaims[executionClaimId].userProxy,
           mintedClaims[executionClaimId].actionPayload,
+          mintedClaims[executionClaimId].action,
           mintedClaims[executionClaimId].executeGas,
           mintedClaims[executionClaimId].executionClaimId,
           mintedClaims[executionClaimId].executionClaimExpiryDate,
           mintedClaims[executionClaimId].executorFee,
           {
-            gasLimit: 1000000
+            gasLimit: 5000000
           }
         );
       } catch (err) {
@@ -240,7 +240,7 @@ async function queryChainAndExecute() {
       let txreceipt;
       try {
         txreceipt = await tx.wait();
-        console.log(`\t\t Execute TX Receipt:\n ${txreceipt}`)
+        console.log(`\t\t Execute TX Receipt:\n ${txreceipt}`);
       } catch (err) {
         console.log(err);
       }

@@ -479,7 +479,7 @@ contract GelatoCore is GelatoUserProxies,
         // Call to trigger view function (returns(bool))
         (bool success,
          bytes memory returndata) = (_trigger.staticcall
-                                             .gas(canExecMaxGas)
+                                             .gas(100000)
                                              (_triggerPayload)
         );
         if (!success) {
@@ -525,7 +525,7 @@ contract GelatoCore is GelatoUserProxies,
                               uint256 indexed canExecuteResult
     );
     event LogExecutionResult(uint256 indexed executionClaimId,
-                             bool indexed success,
+                             bytes returndata,
                              address payable indexed executor
     );
     event LogClaimExecutedAndDeleted(uint256 indexed executionClaimId,
@@ -545,8 +545,9 @@ contract GelatoCore is GelatoUserProxies,
 
     function execute(address _trigger,
                      bytes calldata _triggerPayload,
-                     address _userProxy,
+                     address payable _userProxy,
                      bytes calldata _actionPayload,
+                     address _action,
                      uint256 _executeGas,
                      uint256 _executionClaimId,
                      uint256 _executionClaimExpiryDate,
@@ -592,18 +593,17 @@ contract GelatoCore is GelatoUserProxies,
 
         // _________  _action.call() _______________________________________________
         {
-            (bool success,) = (_userProxy.call
-                                         .gas(_executeGas)
-                                         (_actionPayload)
+            bytes memory returndata = DSProxy(_userProxy).execute.gas(2000000)
+                                                         (_action, _actionPayload
             );
             emit LogExecutionResult(_executionClaimId,
-                                    success,
+                                    returndata,
                                     msg.sender // executor
             );
-            if (success) {
-                executionResult = uint8(ExecutionResult.Success);
-            } else {
+            if (returndata.length == 0) {
                 executionResult = uint8(ExecutionResult.Failure);
+            } else {
+                executionResult = uint8(ExecutionResult.Success);
             }
         }
         // ========

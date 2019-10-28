@@ -32,7 +32,7 @@ contract MultiMintForTimeTrigger
             {
                 _startTime = _startTime.add(_intervalSpan.mul(i));
                 bytes4 triggerSelector = IGelatoTrigger(_timeTrigger).getTriggerSelector();
-                bytes memory triggerPayload = abi.encodeWithSelector(triggerSelector,_startTime);
+                bytes memory triggerPayload = abi.encodeWithSelector(triggerSelector, _startTime);
                 gelatoCore.mintExecutionClaim
                           .value(mintingDepositPerMint)
                           (_timeTrigger,
