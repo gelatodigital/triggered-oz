@@ -172,7 +172,7 @@ async function queryChainAndExecute() {
     }
     console.log("\n");
   }
-  await sleep(10000);
+  await sleep(2000);
 
   // Loop through all execution claims and check if they are executable.
   //  If yes, execute, if not, skip

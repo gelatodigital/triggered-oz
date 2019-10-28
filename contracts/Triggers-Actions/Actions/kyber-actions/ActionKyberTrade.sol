@@ -27,9 +27,9 @@ contract ActionKyberTrade is GelatoActionsStandard
                    address feeSharingParticipant
     );
 
-    event LogTest(address user,
-                  address src,
-                  address dest,
+    event LogTest(address indexed user,
+                  address indexed src,
+                  address indexed dest,
                   uint256 srcAmt,
                   uint256 minConverstionRate,
                   bool userApproved,
@@ -54,7 +54,7 @@ contract ActionKyberTrade is GelatoActionsStandard
         IERC20 srcERC20 = IERC20(_src);
 
         //bool userApproved = srcERC20._hasERC20Allowance(_user, address(this), _srcAmt);
-        //emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, true, true);
+        emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, true, true);
 
         // Make sure kyber contract is MAX-approved by userProxy
         if (!srcERC20._hasERC20Allowance(address(this), kyber, _srcAmt))
