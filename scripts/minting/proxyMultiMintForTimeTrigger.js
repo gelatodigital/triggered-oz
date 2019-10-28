@@ -115,7 +115,14 @@ async function main() {
   console.log(
     `\t\t Encoded Payload With Selector for multiMint:\n ${MULTI_MINT_PAYLOAD_WITH_SELECTOR}\n`
   );
-  await sleep(10000);
+
+  // Getting the current Ethereum price
+  let etherscanProvider = new ethers.providers.EtherscanProvider();
+  let ethUSDPrice;
+  etherscanProvider.getEtherPrice().then(price => {
+    console.log(`\n\t\t Ether price in USD: ${price}`);
+    ethUSDPrice = price;
+  });
   const MINTING_DEPOSIT_PER_MINT = await gelatoCoreContract.getMintingDepositPayable(
     ACTION_KYBER_PROXY_ADDRESS,
     SELECTED_EXECUTOR_ADDRESS
@@ -124,14 +131,16 @@ async function main() {
     `\n\t\t Minting Deposit Per Mint: ${ethers.utils.formatUnits(
       MINTING_DEPOSIT_PER_MINT,
       "ether"
-    )} ETH`
+    )} ETH \t\t${ethUSDPrice *
+      parseFloat(ethers.utils.formatUnits(MINTING_DEPOSIT_PER_MINT, "ether"))} $`
   );
   const MSG_VALUE = MINTING_DEPOSIT_PER_MINT.mul(NUMBER_OF_MINTS);
   console.log(
     `\n\t\t Minting Deposit for ${NUMBER_OF_MINTS} mints: ${ethers.utils.formatUnits(
       MSG_VALUE,
       "ether"
-    )} ETH \n`
+    )} ETH \t\t ${ethUSDPrice *
+      parseFloat(ethers.utils.formatUnits(MSG_VALUE, "ether"))} $`
   );
 
   // send tx to PAYABLE contract method
@@ -142,11 +151,11 @@ async function main() {
   );
 
   console.log(
-    `\t userProxy.execute(multiMintForTimeTrigger) txHash:\n \t${tx.hash}`
+    `\n\t\t userProxy.execute(multiMintForTimeTrigger) txHash:\n \t${tx.hash}`
   );
 
   // The operation is NOT complete yet; we must wait until it is mined
-  console.log("\t\t\n waiting for transaction to get mined \n");
+  console.log("\n\t\t waiting for transaction to get mined \n");
   await tx.wait();
 }
 

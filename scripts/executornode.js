@@ -5,8 +5,8 @@ const ethers = require("ethers");
 const sleep = require("./helpers/sleep.js").sleep;
 
 // ENV VARIABLES
-const path = require('path')
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const DEV_MNEMONIC = process.env.DEV_MNEMONIC;
 const INFURA_ID = process.env.INFURA_ID;
 console.log(
@@ -24,9 +24,14 @@ const GELATO_CORE_ADDRESS = "0x624f09392ae014484a1aB64c6D155A7E2B6998E6";
 
 // Read-Write Instance of GelatoCore
 const gelatoCoreContractABI = [
-  "function execute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _executePayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) returns(uint8 executionResult)"
+  "function canExecute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _executePayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) view returns (uint8)",
+  "function execute(address _trigger, bytes _triggerPayload, address _userProxy, bytes _executePayload, uint256 _executeGas, uint256 _executionClaimId, uint256 _executionClaimExpiryDate, uint256 _executorFee) returns (uint8 executionResult)",
+  "event LogNewExecutionClaimMinted(address indexed selectedExecutor, uint256 indexed executionClaimId, address indexed userProxy, bytes executePayload, uint256 executeGas, uint256 executionClaimExpiryDate, uint256 executorFee)",
+  "event LogTriggerActionMinted(uint256 indexed executionClaimId, address indexed trigger, bytes triggerPayload, address indexed action)",
+  "event LogClaimExecutedAndDeleted(uint256 indexed executionClaimId, address indexed userProxy, address indexed executor, uint256 gasUsedEstimate, uint256 gasPriceUsed, uint256 executionCostEstimate, uint256 executorPayout)",
+  "event LogExecutionClaimCancelled(uint256 indexed executionClaimId, address indexed userProxy, address indexed cancelor)"
 ];
-const gelatoCoreContractContract = new ethers.Contract(
+const gelatoCoreContract = new ethers.Contract(
   GELATO_CORE_ADDRESS,
   gelatoCoreContractABI,
   connectedWallet
@@ -34,155 +39,139 @@ const gelatoCoreContractContract = new ethers.Contract(
 
 // The block from which we start
 let searchFromBlock = process.env.BLOCK;
+console.log(`\n\t\t Starting from block number: ${searchFromBlock}`);
+if (searchFromBlock === "") {
+  throw new Error("You must call this script with 'export BLOCK=NUMBER;'");
+}
 
 // This gets executed with node
-function main() {
-  while (true) {
-    try {
-      setTimeout(queryChainAndExecute, 30000)
-    } catch(err) {
-      console.log(err);
-      break;
-    }
+async function main() {
+  queryChainAndExecute();
+  setInterval(queryChainAndExecute, 120 * 1000);
 }
-main();
+main().catch(err => console.log(err));
 
 // The logic that gets executed from inside main()
 async function queryChainAndExecute() {
+  let currentBlock = await provider.getBlockNumber();
   console.log(`\n\t\t Starting from block number: ${searchFromBlock}`);
-  console.log(`\n\t\t Running Executor Node from:\n, ${wallet.address}\n`);
+  console.log(`\n\t\t Current block number:       ${searchFromBlock}`);
+  console.log(`\n\t\t Running Executor Node from: ${wallet.address}\n`);
+
+  // Set providers event search to searchFromBlock
+  provider.resetEventsBlock(searchFromBlock);
 
   // Fetch minted and not burned executionClaims
-  const mintedClaims = {};
+  let mintedClaims = {};
+
   // Get LogNewExecutionClaimMinted return values
-  await gelatoCoreContract
-    .getPastEvents(
-      "LogNewExecutionClaimMinted",
-      {
-        fromBlock: searchFromBlock,
-        toBlock: "latest"
-      },
-      function(error, events) {}
-    )
-    .then(function(events) {
-      events.forEach(event => {
-        console.log(
-          "\t\tLogNewExecutionClaimMinted:",
-          "\t\texecutionClaimId: ",
-          event.returnValues.executionClaimId,
-          "\n"
-        );
-        mintedClaims[parseInt(event.returnValues.executionClaimId)] = {
-          selectedExecutor: event.returnValues.selectedExecutor,
-          executionClaimId: event.returnValues.executionClaimId,
-          userProxy: event.returnValues.userProxy,
-          executePayload: event.returnValues.executePayload,
-          executeGas: event.returnValues.executeGas,
-          executionClaimExpiryDate: event.returnValues.executionClaimExpiryDate,
-          executorFee: event.returnValues.executorFee
-        };
-      });
-    });
-
+  gelatoCoreContract.on(
+    "LogNewExecutionClaimMinted",
+    (
+      selectedExecutor,
+      executionClaimId,
+      userProxy,
+      executePayload,
+      executeGas,
+      executionClaimExpiryDate,
+      executorFee
+    ) => {
+      console.log(
+        `\t\tLogNewExecutionClaimMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
+      );
+      mintedClaims[executionClaimId.toString()] = {
+        selectedExecutor: selectedExecutor,
+        executionClaimId: executionClaimId,
+        userProxy: userProxy,
+        executePayload: executePayload,
+        executeGas: executeGas,
+        executionClaimExpiryDate: executionClaimExpiryDate,
+        executorFee: executorFee
+      };
+    }
+  );
   // Get LogTriggerActionMinted return values
-  await gelatoCoreContract
-    .getPastEvents(
-      "LogTriggerActionMinted",
-      {
-        fromBlock: searchFromBlock,
-        toBlock: "latest"
-      },
-      function(error, events) {}
-    )
-    .then(function(events) {
-      events.forEach(event => {
-        mintedClaims[parseInt(event.returnValues.executionClaimId)].trigger =
-          event.returnValues.trigger;
-        mintedClaims[
-          parseInt(event.returnValues.executionClaimId)
-        ].triggerPayload = event.returnValues.triggerPayload;
-        mintedClaims[parseInt(event.returnValues.executionClaimId)].action =
-          event.returnValues.action;
-        console.log(
-          "\t\tLogTriggerActionMinted:",
-          "\t\texecutionClaimId: ",
-          event.returnValues.executionClaimId,
-          "\n"
-        );
-      });
-    });
-
+  gelatoCoreContract.on(
+    "LogTriggerActionMinted",
+    (executionClaimId, trigger, triggerPayload, action) => {
+      mintedClaims[executionClaimId.toString()].trigger = trigger;
+      mintedClaims[executionClaimId.toString()].triggerPayload = triggerPayload;
+      mintedClaims[executionClaimId.toString()].action = action;
+      console.log(
+        `\t\tLogTriggerActionMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
+      );
+    }
+  );
   // Check which execution claims already got executed and remove then from the list
-  await gelatoCoreContract
-    .getPastEvents(
-      "LogClaimExecutedBurnedAndDeleted",
-      {
-        fromBlock: searchFromBlock,
-        toBlock: "latest"
-      },
-      function(error, events) {}
-    )
-    .then(function(events) {
-      if (events !== undefined) {
-        events.forEach(event => {
-          delete mintedClaims[parseInt(event.returnValues.executionClaimId)];
-          console.log(
-            "\n\t\tLogClaimExecutedBurnedAndDeleted:\n",
-            "\t\texecutionClaimId: ",
-            event.returnValues.executionClaimId,
-            "\n"
-          );
-        });
-      }
-    });
-
+  gelatoCoreContract.on("LogClaimExecutedAndDeleted", executionClaimId => {
+    delete mintedClaims[executionClaimId.toString()];
+    console.log(`\n\t\tLogClaimExecutedBurnedAndDeleted: ${executionClaimId}`);
+  });
   // Check which execution claims already got cancelled and remove then from the list
-  await gelatoCoreContract
-    .getPastEvents(
-      "LogExecutionClaimCancelled",
-      {
-        fromBlock: searchFromBlock,
-        toBlock: "latest"
-      },
-      function(error, events) {}
-    )
-    .then(function(events) {
-      if (events !== undefined) {
-        events.forEach(event => {
-          delete mintedClaims[parseInt(event.returnValues.executionClaimId)];
-          console.log(
-            "\n\t\tLogExecutionClaimCancelled:\n",
-            "\t\texecutionClaimId: ",
-            event.returnValues.executionClaimId,
-            "\n"
-          );
-        });
-      }
-    });
+  gelatoCoreContract.on("LogExecutionClaimCancelled", executionClaimId => {
+    delete mintedClaims[executionClaimId.toString()];
+    console.log(`\n\t\tLogExecutionClaimCancelled: ${executionClaimId}\n`);
+  });
 
-  console.log("\n\n\t\tAvailable ExecutionClaims:", mintedClaims);
 
-  function isEmpty(obj) {
-    return Object.getOwnPropertyNames(obj).length === 0;
+  await sleep(20000);
+
+  // Log available executionClaims
+  console.log("\n\n\t\t Available ExecutionClaims:");
+  for (let executionClaimId in mintedClaims) {
+    for (let [key, value] of Object.entries(mintedClaims[executionClaimId])) {
+      console.log(`\t\t${key}: ${value}`);
+    }
+    console.log("\n");
   }
+  await sleep(20000);
 
-  if (isEmpty(mintedClaims)) {
-    searchFromBlock = await web3.eth.getBlockNumber();
-    searchFromBlock = searchFromBlock - 2;
-  }
+  // Reset the searchFromBlock
+  searchFromBlock = currentBlock - 2;
+  console.log(
+    `\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
+  );
 
-  // Loop through all execution claims and check if they are executable. If yes, execute, if not, skip
+  // Loop through all execution claims and check if they are executable.
+  //  If yes, execute, if not, skip
   let canExecuteReturn;
-
   for (let executionClaimId in mintedClaims) {
     console.log(
-      "\n\tCheck if ExeutionClaim ",
-      executionClaimId,
-      " is executable\n"
+      `\n\tCheck if ExeutionClaim ${executionClaimId} is executable\n`
     );
     // Call canExecute
-    canExecuteReturn = await gelatoCoreContract.contract.methods
-      .canExecute(
+    canExecuteReturn = await gelatoCoreContract.canExecute(
+      mintedClaims[executionClaimId].trigger,
+      mintedClaims[executionClaimId].triggerPayload,
+      mintedClaims[executionClaimId].userProxy,
+      mintedClaims[executionClaimId].executePayload,
+      mintedClaims[executionClaimId].executeGas,
+      mintedClaims[executionClaimId].executionClaimId,
+      mintedClaims[executionClaimId].executionClaimExpiryDate,
+      mintedClaims[executionClaimId].executorFee
+    );
+    const canExecuteResults = [
+      "WrongCalldataOrAlreadyDeleted",
+      "UserProxyOutOfFunds",
+      "NonExistantExecutionClaim",
+      "ExecutionClaimExpired",
+      "TriggerReverted",
+      "NotExecutable",
+      "Executable"
+    ];
+
+    console.log(
+      `\n\t\t CanExecute Result: ${
+        canExecuteResults[parseInt(canExecuteReturn)]
+      }`
+    );
+    await sleep(5000);
+    if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
+      console.log(`
+        🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
+    `);
+      console.log(`⚡⚡⚡ Send TX ⚡⚡⚡\n`);
+      let tx = await gelatoCoreContract.execute(
         mintedClaims[executionClaimId].trigger,
         mintedClaims[executionClaimId].triggerPayload,
         mintedClaims[executionClaimId].userProxy,
@@ -190,42 +179,15 @@ async function queryChainAndExecute() {
         mintedClaims[executionClaimId].executeGas,
         mintedClaims[executionClaimId].executionClaimId,
         mintedClaims[executionClaimId].executionClaimExpiryDate,
-        mintedClaims[executionClaimId].executorFee
-      )
-      .call();
-
-    console.log("\n\t CanExecute Result:", canExecuteReturn, "\n");
-
-    if (parseInt(canExecuteReturn.toString()) === 0) {
-      console.log(`
-        🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
-    `);
-      console.log(`
-        ⚡⚡⚡ Send TX ⚡⚡⚡
-    `);
-
-      let txGasPrice = await web3.utils.toWei("5", "gwei");
-
-      await gelatoCoreContract.contract.methods
-        .execute(
-          mintedClaims[executionClaimId].trigger,
-          mintedClaims[executionClaimId].triggerPayload,
-          mintedClaims[executionClaimId].userProxy,
-          mintedClaims[executionClaimId].executePayload,
-          mintedClaims[executionClaimId].executeGas,
-          mintedClaims[executionClaimId].executionClaimId,
-          mintedClaims[executionClaimId].executionClaimExpiryDate,
-          mintedClaims[executionClaimId].executorFee
-        )
-        .send({
-          gas: 500000,
-          from: wallet.address,
-          gasPrice: txGasPrice
-        })
-        .once("receipt", receipt => console.log("\n\t\tTx Receipt:\n", receipt))
-        .on("error", error => {
-          console.log(error);
-        });
+        mintedClaims[executionClaimId].executorFee,
+        {
+          gasLimit: 1000000
+        }
+      );
+      console.log(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
+      // The operation is NOT complete yet; we must wait until it is mined
+      console.log("\t\t waiting for the execute transaction to get mined \n");
+      await tx.wait();
     } else {
       console.log(
         `❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`

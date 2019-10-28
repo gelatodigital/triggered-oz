@@ -369,6 +369,7 @@ contract GelatoCore is GelatoUserProxies,
                 require(proxyFactory.isProxy(msg.sender),
                     "GelatoCore.mintExecutionClaim: msg.sender is not a proxy"
                 );
+                userProxy = msg.sender;
             }
         }
         // =============
@@ -449,7 +450,7 @@ contract GelatoCore is GelatoUserProxies,
     // ********************* EXECUTE FUNCTION SUITE *********************
     //  checked by canExecute and returned as a uint256 from User
     enum CanExecuteCheck {
-        WrongCalldata,  // also returns if a not-selected executor calls fn
+        WrongCalldataOrAlreadyDeleted,  // also returns if a not-selected executor calls fn
         UserProxyOutOfFunds,
         NonExistantExecutionClaim,
         ExecutionClaimExpired,
@@ -486,7 +487,7 @@ contract GelatoCore is GelatoUserProxies,
         ));
         // Check passed calldata and that msg.sender is selected executor
         if(computedExecutionClaimHash != hashedExecutionClaims[_executionClaimId]) {
-            return uint8(CanExecuteCheck.WrongCalldata);
+            return uint8(CanExecuteCheck.WrongCalldataOrAlreadyDeleted);
         }
         // Require user proxy to have balance to pay executor
         if (userProxyDeposit[_userProxy] < _executorFee) {
@@ -553,13 +554,13 @@ contract GelatoCore is GelatoUserProxies,
                              bool indexed success,
                              address payable indexed executor
     );
-    event LogClaimExecutedBurnedAndDeleted(uint256 indexed executionClaimId,
-                                           address indexed userProxy,
-                                           address payable indexed executor,
-                                           uint256 gasUsedEstimate,
-                                           uint256 gasPriceUsed,
-                                           uint256 executionCostEstimate,
-                                           uint256 executorPayout
+    event LogClaimExecutedAndDeleted(uint256 indexed executionClaimId,
+                                     address indexed userProxy,
+                                     address payable indexed executor,
+                                     uint256 gasUsedEstimate,
+                                     uint256 gasPriceUsed,
+                                     uint256 executionCostEstimate,
+                                     uint256 executorPayout
     );
 
     enum ExecutionResult {
@@ -641,13 +642,13 @@ contract GelatoCore is GelatoUserProxies,
                                                .add(gasOutsideGasleftChecks)
             );
             uint256 executionCostEstimate = gasUsedEstimate.mul(tx.gasprice);
-            emit LogClaimExecutedBurnedAndDeleted(_executionClaimId,
-                                                  _userProxy,
-                                                  msg.sender,  // executor
-                                                  gasUsedEstimate,
-                                                  tx.gasprice,
-                                                  executionCostEstimate,
-                                                  _executorFee
+            emit LogClaimExecutedAndDeleted(_executionClaimId,
+                                            _userProxy,
+                                            msg.sender,  // executor
+                                            gasUsedEstimate,
+                                            tx.gasprice,
+                                            executionCostEstimate,
+                                            _executorFee
             );
         }
         // **** EFFECTS 2 ****

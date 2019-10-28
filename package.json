@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "executornode:ropsten": "export BLOCK=$BLOCK; npx truffle exec executornode.js --network ropsten"
+    "proxymultimint:ropsten": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
+    "executornode:ropsten": "export BLOCK=$BLOCK; node scripts/executornode.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.0.23",
     "dotenv": "^8.2.0"
   },
   "dependencies": {

@@ -157,11 +157,11 @@
       }
     },
     "GelatoCore": {
-      "address": "0x9998E4d31440460296C912d74111B9Ef8f0f5429",
-      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614e9e8061001e6000396000f3fe",
-      "bodyBytecodeHash": "dead63d5cbaf45ab5cf926fffbb32938cef68e7f32eb8b73593a40608acbf8fc",
-      "localBytecodeHash": "be179cc09885c0c3d108916bfcce31e528c6c63c40d1e9d4c90e4d04153b8367",
-      "deployedBytecodeHash": "be179cc09885c0c3d108916bfcce31e528c6c63c40d1e9d4c90e4d04153b8367",
+      "address": "0x7ED7B668644a9C09ff7d509A3eC00E5A9588A18B",
+      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614ea38061001e6000396000f3fe",
+      "bodyBytecodeHash": "45238ade3d9395a78325467553184721113c58a3394cf266775938f8e830e17a",
+      "localBytecodeHash": "1d1eea0c419e83cab08623032709b214342b5a1bd44af7cc2153a001de3ad36e",
+      "deployedBytecodeHash": "1d1eea0c419e83cab08623032709b214342b5a1bd44af7cc2153a001de3ad36e",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -473,7 +473,7 @@
       {
         "address": "0x624f09392ae014484a1aB64c6D155A7E2B6998E6",
         "version": "1.0.0",
-        "implementation": "0x9998E4d31440460296C912d74111B9Ef8f0f5429",
+        "implementation": "0x7ED7B668644a9C09ff7d509A3eC00E5A9588A18B",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }
