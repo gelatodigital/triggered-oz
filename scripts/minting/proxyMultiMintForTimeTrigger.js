@@ -69,7 +69,7 @@ const DEST = "0xaD6D458402F60fD3Bd25163575031ACDce07538D"; // ropsten dai
 const SRC_AMOUNT = ethers.utils.bigNumberify((10e18).toString());
 // minConversionRate async fetched from KyberNetwork during main() execution
 const SELECTED_EXECUTOR_ADDRESS = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
-const INTERVAL_SPAN = "300"; // 300 seconds
+const INTERVAL_SPAN = "500"; // 300 seconds
 const NUMBER_OF_MINTS = "1";
 
 // ABI encoding function

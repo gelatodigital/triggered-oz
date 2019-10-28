@@ -130,7 +130,7 @@ async function queryChainAndExecute() {
     );
   });
 
-  await sleep(3000);
+  await sleep(10000);
 
   // Log available executionClaims
   console.log("\n\n\t\t Available ExecutionClaims:");

@@ -157,11 +157,11 @@
       }
     },
     "GelatoCore": {
-      "address": "0xACDF49fA73FD3dA11ed4Bc03E1Bfb4EF14918a5A",
-      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614e6f8061001e6000396000f3fe",
-      "bodyBytecodeHash": "2a5907c555f13b4bd0516630b0d7292515e182639ca983f3621bc1c2df1b32c1",
-      "localBytecodeHash": "5de861221878520b0e5b5546f66f309c44a00bd3100d77e0907d572308c4ea45",
-      "deployedBytecodeHash": "5de861221878520b0e5b5546f66f309c44a00bd3100d77e0907d572308c4ea45",
+      "address": "0x036810290a0D1d07a3329baaE54FE65E720e4491",
+      "constructorCode": "60806040525b5b5b5b5b5b61000f565b6149fe8061001e6000396000f3fe",
+      "bodyBytecodeHash": "2f72333341e65df6a20d6dcef8d48df4cf886db30dac96bcda182b2fcd496b2c",
+      "localBytecodeHash": "393362c52a189e1fcf9a2ca2b6febf0ec05fa90f4069068466d611592323ac88",
+      "deployedBytecodeHash": "393362c52a189e1fcf9a2ca2b6febf0ec05fa90f4069068466d611592323ac88",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -256,25 +256,25 @@
           "contract": "GelatoUserProxies",
           "path": "contracts/GelatoCore.sol",
           "label": "proxyRegistry",
-          "astId": 1537,
+          "astId": 1536,
           "type": "t_address",
-          "src": "812:35:14"
+          "src": "753:35:14"
         },
         {
           "contract": "GelatoUserProxies",
           "path": "contracts/GelatoCore.sol",
           "label": "guardFactory",
-          "astId": 1539,
+          "astId": 1538,
           "type": "t_address",
-          "src": "853:35:14"
+          "src": "794:35:14"
         },
         {
           "contract": "GelatoUserProxies",
           "path": "contracts/GelatoCore.sol",
           "label": "proxyExecSelector",
-          "astId": 1541,
+          "astId": 1540,
           "type": "t_bytes4",
-          "src": "895:31:14"
+          "src": "836:31:14"
         },
         {
           "contract": "Ownable",
@@ -312,89 +312,89 @@
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "userProxyDeposit",
-          "astId": 1737,
+          "astId": 1736,
           "type": "t_mapping<t_uint256>",
-          "src": "3959:53:14"
+          "src": "3900:53:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "executorPrice",
-          "astId": 1741,
+          "astId": 1740,
           "type": "t_mapping<t_uint256>",
-          "src": "4018:50:14"
+          "src": "3959:50:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "executorClaimLifespan",
-          "astId": 1745,
+          "astId": 1744,
           "type": "t_mapping<t_uint256>",
-          "src": "4074:58:14"
+          "src": "4015:58:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "executorBalance",
-          "astId": 1749,
+          "astId": 1748,
           "type": "t_mapping<t_uint256>",
-          "src": "4138:52:14"
+          "src": "4079:52:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "gasOutsideGasleftChecks",
-          "astId": 1751,
+          "astId": 1750,
           "type": "t_uint256",
-          "src": "4250:40:14"
+          "src": "4191:40:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "gasInsideGasleftChecks",
-          "astId": 1753,
+          "astId": 1752,
           "type": "t_uint256",
-          "src": "4296:39:14"
+          "src": "4237:39:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "canExecMaxGas",
-          "astId": 1755,
+          "astId": 1754,
           "type": "t_uint256",
-          "src": "4341:30:14"
+          "src": "4282:30:14"
         },
         {
           "contract": "GelatoCoreAccounting",
           "path": "contracts/GelatoCore.sol",
           "label": "proxyExecuteGas",
-          "astId": 1757,
+          "astId": 1756,
           "type": "t_uint256",
-          "src": "4377:32:14"
+          "src": "4318:32:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "executionClaimIds",
-          "astId": 2076,
+          "astId": 2075,
           "type": "t_struct<Counters.Counter>",
-          "src": "10339:42:14"
+          "src": "10280:42:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "userProxyByExecutionClaimId",
-          "astId": 2092,
+          "astId": 2091,
           "type": "t_mapping<t_address>",
-          "src": "10612:63:14"
+          "src": "10553:63:14"
         },
         {
           "contract": "GelatoCore",
           "path": "contracts/GelatoCore.sol",
           "label": "hashedExecutionClaims",
-          "astId": 2108,
+          "astId": 2107,
           "type": "t_mapping<t_bytes32>",
-          "src": "11178:57:14"
+          "src": "11119:57:14"
         }
       ],
       "warnings": {
@@ -408,9 +408,9 @@
             "contract": "GelatoCore",
             "path": "contracts/GelatoCore.sol",
             "label": "executionClaimIds",
-            "astId": 2076,
+            "astId": 2075,
             "type": "t_struct<Counters.Counter>",
-            "src": "10339:42:14"
+            "src": "10280:42:14"
           }
         ],
         "storageDiff": []
@@ -473,7 +473,7 @@
       {
         "address": "0x624f09392ae014484a1aB64c6D155A7E2B6998E6",
         "version": "1.0.0",
-        "implementation": "0xACDF49fA73FD3dA11ed4Bc03E1Bfb4EF14918a5A",
+        "implementation": "0x036810290a0D1d07a3329baaE54FE65E720e4491",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }
