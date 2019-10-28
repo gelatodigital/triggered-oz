@@ -61,7 +61,7 @@ const TARGET_ADDRESS = MULTI_MINT_IMPL_ADDRESS;
 // Arguments for function call to multiMintProxy.multiMint()
 const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
 const START_TIME = Math.floor(Date.now() / 1000);
-const ACTION_KYBER_IMPL_ADDRESS = "0x42FfE1A9C2BFFfa9534b5e125743A0DC51c64928";
+const ACTION_KYBER_IMPL_ADDRESS = "0xbD2494c7496Fc226ed13eD185Ce18e1EC7c15CF3";
 // Specific Action Params: encoded during main() execution
 const USER = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
 const SRC = "0x4E470dc7321E84CA96FcAEDD0C8aBCebbAEB68C6"; // ropsten knc

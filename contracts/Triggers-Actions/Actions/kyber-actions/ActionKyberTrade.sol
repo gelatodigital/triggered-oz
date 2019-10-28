@@ -2,12 +2,10 @@ pragma solidity ^0.5.0;
 
 import '../GelatoActionsStandard.sol';
 import '../../../Interfaces/Kyber/IKyber.sol';
-import '../../../Helpers/GelatoERC20Lib.sol';
+import '@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol';
 
 contract ActionKyberTrade is GelatoActionsStandard
 {
-    using GelatoERC20Lib for IERC20;
-
     function initialize()
         external
         initializer
@@ -32,8 +30,10 @@ contract ActionKyberTrade is GelatoActionsStandard
                   address indexed dest,
                   uint256 srcAmt,
                   uint256 minConverstionRate,
-                  bool userApproved,
-                  bool kyberApproved
+                  uint256 kyberAllowance,
+                  uint256 userAllowance,
+                  uint256 thisBalance,
+                  uint256 destAmt
     );
 
     function action(///@dev ONLY ENCODE this NO SELECTOR
@@ -53,18 +53,18 @@ contract ActionKyberTrade is GelatoActionsStandard
         ///@notice in context of .delegatecall address(this) is the userProxy
         IERC20 srcERC20 = IERC20(_src);
 
-        //bool userApproved = srcERC20._hasERC20Allowance(_user, address(this), _srcAmt);
-        emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, true, true);
-
         // Make sure kyber contract is MAX-approved by userProxy
-        if (!srcERC20._hasERC20Allowance(address(this), kyber, _srcAmt))
-        {
-            srcERC20._safeIncreaseERC20Allowance(kyber, 2**255);
+        uint256 kyberAllowance = srcERC20.allowance(address(this), kyber);
+        if (kyberAllowance < _srcAmt) {
+            srcERC20.approve(kyber, 2**255);
         }
+        kyberAllowance = srcERC20.allowance(address(this), kyber);
 
-        // Transfer funds from user to their userProxy
-        ///@notice this requires users to have approved the userProxy beforehand
-        srcERC20._safeTransferFrom(_user, address(this), _srcAmt);
+        uint256 userAllowance = srcERC20.allowance(_user, address(this));
+        if (userAllowance >= _srcAmt) {
+            srcERC20.transferFrom(_user, address(this), _srcAmt);
+        }
+        uint256 srcBalance = srcERC20.balanceOf(address(this));
 
         ///@notice .call action - msg.sender is userProxy (address(this))
         destAmt = IKyber(kyber).trade(_src,
@@ -75,16 +75,19 @@ contract ActionKyberTrade is GelatoActionsStandard
                                       _minConversionRate,
                                       address(0)  // fee-sharing
         );
-        if (destAmt == 0) {
-            revert("ActionKyberTrade: trade failed (destAmt == 0)");
-        }
-        emit LogTrade(_src,
+
+        // Transfer destAmt ERC20 to user
+        IERC20 destERC20 = IERC20(_dest);
+        destERC20.transfer(_user, destAmt);
+
+        emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, kyberAllowance, userAllowance, srcBalance, destAmt);
+        /*emit LogTrade(_src,
                       _srcAmt,
                       _dest,
                       destAmt,
                       _user,
                       _minConversionRate,
                       address(0)  // fee-sharing
-        );
+        );*/
     }
 }

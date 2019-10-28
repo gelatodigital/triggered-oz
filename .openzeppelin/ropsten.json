@@ -75,11 +75,11 @@
       }
     },
     "ActionKyberTrade": {
-      "address": "0x42FfE1A9C2BFFfa9534b5e125743A0DC51c64928",
-      "constructorCode": "60806040525b5b61000b565b6117628061001a6000396000f3fe",
-      "bodyBytecodeHash": "8bd653bee596914d4a5ebf79c89fc36f1b08f2cd3720a90b57481066bbe58558",
-      "localBytecodeHash": "7ac726fa68fc52eb88bd9617370578dea027d59cde2700f845d7232daac4e5b9",
-      "deployedBytecodeHash": "7ac726fa68fc52eb88bd9617370578dea027d59cde2700f845d7232daac4e5b9",
+      "address": "0x966432ad28e67655936bEC82Ed3cBf67F5cc556E",
+      "constructorCode": "60806040525b5b61000b565b610d988061001a6000396000f3fe",
+      "bodyBytecodeHash": "bb422218cd8deb99105bddf5a84fb7f9d5551e75055e84308e0c9b090186047f",
+      "localBytecodeHash": "0c8ba9db1947ceaa566a2eadef00bee1a7e1de19ec94fe73613207fa1c5d29f2",
+      "deployedBytecodeHash": "0c8ba9db1947ceaa566a2eadef00bee1a7e1de19ec94fe73613207fa1c5d29f2",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -464,7 +464,7 @@
       {
         "address": "0x8710aF1bC86a569c18Ec5b41A656B3aA9Eca9037",
         "version": "1.0.0",
-        "implementation": "0x42FfE1A9C2BFFfa9534b5e125743A0DC51c64928",
+        "implementation": "0x966432ad28e67655936bEC82Ed3cBf67F5cc556E",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }

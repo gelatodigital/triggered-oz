@@ -237,8 +237,10 @@ async function queryChainAndExecute() {
       console.log(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
       // The operation is NOT complete yet; we must wait until it is mined
       console.log("\t\t waiting for the execute transaction to get mined \n");
+      let txreceipt;
       try {
-        await tx.wait();
+        txreceipt = await tx.wait();
+        console.log(`\t\t Execute TX Receipt:\n ${txreceipt}`)
       } catch (err) {
         console.log(err);
       }
