@@ -61,8 +61,9 @@ const TARGET_ADDRESS = MULTI_MINT_IMPL_ADDRESS;
 // Arguments for function call to multiMintProxy.multiMint()
 const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
 const START_TIME = Date.now();
-const ACTION_KYBER_IMPL_ADDRESS = "0x6449992895c36BE20b356D85E3A1411135D46a7b";
+const ACTION_KYBER_IMPL_ADDRESS = "0x088A7a91140CD0A95a6A6Cc6d6c2cBf760F584B6";
 // Specific Action Params: encoded during main() execution
+const USER = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
 const SRC = "0x4E470dc7321E84CA96FcAEDD0C8aBCebbAEB68C6"; // ropsten knc
 const DEST = "0xaD6D458402F60fD3Bd25163575031ACDce07538D"; // ropsten dai
 const SRC_AMOUNT = ethers.utils.bigNumberify((10e18).toString());
@@ -73,7 +74,7 @@ const NUMBER_OF_MINTS = "1";
 
 // ABI encoding function
 const getEncodedActionKyberTradeParams = require("../helpers/encodings.js")
-  .getEncodedActionKyberTradeParams;
+  .getActionKyberTradePayloadWithSelector;
 const getMultiMintForTimeTriggerPayloadWithSelector = require("../helpers/encodings.js")
   .getMultiMintForTimeTriggerPayloadWithSelector;
 
@@ -94,20 +95,21 @@ async function main() {
   );
 
   // Encode the specific params for ActionKyberTrade
-  const ENCODED_ACTION_PARAMS = getEncodedActionKyberTradeParams(
+  const ACTION_KYBER_PAYLOAD = getEncodedActionKyberTradeParams(
+    USER,
     SRC,
     DEST,
     SRC_AMOUNT,
     minConversionRate
   );
-  console.log(`\t\t EncodedActionParams: \n ${ENCODED_ACTION_PARAMS}\n`);
+  console.log(`\t\t EncodedActionParams: \n ${ACTION_KYBER_PAYLOAD}\n`);
 
   // Encode the payload for the call to MultiMintForTimeTrigger.multiMint
   const MULTI_MINT_PAYLOAD_WITH_SELECTOR = getMultiMintForTimeTriggerPayloadWithSelector(
     TRIGGER_TIME_PROXY_ADDRESS,
     START_TIME,
     ACTION_KYBER_IMPL_ADDRESS,
-    ENCODED_ACTION_PARAMS,
+    ACTION_KYBER_PAYLOAD,
     SELECTED_EXECUTOR_ADDRESS,
     INTERVAL_SPAN,
     NUMBER_OF_MINTS
@@ -165,12 +167,13 @@ async function main() {
 
   // The operation is NOT complete yet; we must wait until it is mined
   console.log("\n\t\t waiting for transaction to get mined \n");
+  let txReceipt;
   try {
-    await tx.wait();
+    txReceipt = await tx.wait();
   } catch (err) {
     console.log(err);
   }
-  console.log(`\n\t\t minting tx mined in block ${tx.blockNumber}`);
+  console.log(`\n\t\t minting tx mined in block ${txReceipt.blockNumber}`);
 }
 
 // What to execute when running node

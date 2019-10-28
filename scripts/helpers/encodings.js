@@ -2,6 +2,7 @@
 const ethers = require("ethers");
 
 exports.getEncodedActionKyberTradeParams = (
+  user,
   src,
   dest,
   srcAmount,
@@ -9,17 +10,51 @@ exports.getEncodedActionKyberTradeParams = (
 ) => {
   const abiCoder = ethers.utils.defaultAbiCoder;
   const encodedActionParams = abiCoder.encode(
-    ["address", "address", "uint256", "uint256"],
-    [src, dest, srcAmount, minConversionRate]
+    ["address", "address", "address", "uint256", "uint256"],
+    [user, src, dest, srcAmount, minConversionRate]
   );
   return encodedActionParams;
+};
+
+exports.getActionKyberTradePayloadWithSelector = (
+  // action params with selector
+  _user,
+  _src,
+  _dest,
+  _srcAmt,
+  _minConversionRate
+) => {
+  const actionKyberTradeABI = [
+    {
+      name: "action",
+      type: "function",
+      inputs: [
+        { type: "address", name: "_user" },
+        { type: "address", name: "_src" },
+        { type: "address", name: "_dest" },
+        { type: "uint256", name: "_srcAmt" },
+        { type: "uint256", name: "_minConversionRate" }
+      ]
+    }
+  ];
+  const interface = new ethers.utils.Interface(actionKyberTradeABI);
+
+  const actionPayloadWithSelector = interface.functions.action.encode([
+    _user,
+    _src,
+    _dest,
+    _srcAmt,
+    _minConversionRate
+  ]);
+
+  return actionPayloadWithSelector;
 };
 
 exports.getMultiMintForTimeTriggerPayloadWithSelector = (
   timeTrigger,
   startTime,
   action,
-  encodedSpecificActionParams,
+  actionPayload,
   selectedExecutor,
   intervalSpan,
   numberOfMints
@@ -32,7 +67,7 @@ exports.getMultiMintForTimeTriggerPayloadWithSelector = (
         { type: "address", name: "_timeTrigger" },
         { type: "uint256", name: "_startTime" },
         { type: "address", name: "_action" },
-        { type: "bytes", name: "_specificActionParams" },
+        { type: "bytes", name: "_actionPayload" },
         { type: "address", name: "_selectedExecutor" },
         { type: "uint256", name: "_intervalSpan" },
         { type: "uint256", name: "_numberOfMints" }
@@ -46,7 +81,7 @@ exports.getMultiMintForTimeTriggerPayloadWithSelector = (
       timeTrigger,
       startTime,
       action,
-      encodedSpecificActionParams,
+      actionPayload,
       selectedExecutor,
       intervalSpan,
       numberOfMints

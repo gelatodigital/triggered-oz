@@ -130,7 +130,7 @@ async function queryChainAndExecute() {
     );
   });
 
-  await sleep(20000);
+  await sleep(3000);
 
   // Log available executionClaims
   console.log("\n\n\t\t Available ExecutionClaims:");
@@ -140,7 +140,7 @@ async function queryChainAndExecute() {
     }
     console.log("\n");
   }
-  await sleep(20000);
+  await sleep(2000);
 
   // Reset the searchFromBlock
   searchFromBlock = currentBlock - 2;
@@ -186,7 +186,7 @@ async function queryChainAndExecute() {
         canExecuteResults[parseInt(canExecuteReturn)]
       }`
     );
-    await sleep(5000);
+    await sleep(2000);
     if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
       console.log(`
         🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥

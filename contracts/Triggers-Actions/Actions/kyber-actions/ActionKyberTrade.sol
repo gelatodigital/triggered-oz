@@ -27,9 +27,18 @@ contract ActionKyberTrade is GelatoActionsStandard
                    address feeSharingParticipant
     );
 
-    function action(///@dev DONT ENCODE selector and user (both encoded by gelatoCore)
+    event LogTest(address user,
+                  address src,
+                  address dest,
+                  uint256 srcAmt,
+                  uint256 minConverstionRate,
+                  bool userApproved,
+                  bool kyberApproved
+    );
+    event LogSuccess(bool success);
+
+    function action(///@dev ONLY ENCODE this NO SELECTOR
                     address _user,
-                    ///@dev ONLY ENCODE all the below "specificActionParams"
                     address _src,
                     address _dest,
                     uint256 _srcAmt,
@@ -44,14 +53,20 @@ contract ActionKyberTrade is GelatoActionsStandard
         ///@notice ERC20 preparation
         ///@notice in context of .delegatecall address(this) is the userProxy
         IERC20 srcERC20 = IERC20(_src);
-        // Make sure kyber contract is MAX-approved by userProxy
+
+        //bool userApproved = srcERC20._hasERC20Allowance(owner, address(this), _srcAmt);
+        emit LogTest(_user, _src, _dest, _srcAmt, _minConversionRate, true, true);
+
+        /*// Make sure kyber contract is MAX-approved by userProxy
         if (!srcERC20._hasERC20Allowance(address(this), kyber, _srcAmt))
         {
             srcERC20._safeIncreaseERC20Allowance(kyber, 2**255);
-        }
+        }*/
+
+
         // Transfer funds from user to their userProxy
         ///@notice this requires users to have approved the userProxy beforehand
-        srcERC20._safeTransferFrom(_user, address(this), _srcAmt);
+        /*srcERC20._safeTransferFrom(_user, address(this), _srcAmt);
 
         ///@notice .call action - msg.sender is userProxy (address(this))
         destAmt = IKyber(kyber).trade(_src,
@@ -72,6 +87,6 @@ contract ActionKyberTrade is GelatoActionsStandard
                       _user,
                       _minConversionRate,
                       address(0)  // fee-sharing
-        );
+        );*/
     }
 }

@@ -11,7 +11,7 @@ contract MultiMintForTimeTrigger
                        address _timeTrigger,
                        uint256 _startTime,  // will be encoded here
                        address _action,
-                       bytes calldata _specificActionParams,
+                       bytes calldata _actionPayload,
                        address payable _selectedExecutor,
                        // MultiMintTimeBased params
                        uint256 _intervalSpan,
@@ -36,7 +36,7 @@ contract MultiMintForTimeTrigger
                           (_timeTrigger,
                            encodedStartTime,
                            _action,
-                           _specificActionParams,
+                           _actionPayload,
                            _selectedExecutor
                 );
             }

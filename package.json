@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "proxymultimint:ropsten": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
-    "executornode:ropsten": "export BLOCK=$BLOCK; node scripts/executornode.js"
+    "mint": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
+    "exec": "export BLOCK=$BLOCK; node scripts/executornode.js"
   },
   "keywords": [],
   "author": "",

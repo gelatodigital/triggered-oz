@@ -75,11 +75,11 @@
       }
     },
     "ActionKyberTrade": {
-      "address": "0x6449992895c36BE20b356D85E3A1411135D46a7b",
-      "constructorCode": "60806040525b5b61000b565b6117628061001a6000396000f3fe",
-      "bodyBytecodeHash": "8bd653bee596914d4a5ebf79c89fc36f1b08f2cd3720a90b57481066bbe58558",
-      "localBytecodeHash": "7ac726fa68fc52eb88bd9617370578dea027d59cde2700f845d7232daac4e5b9",
-      "deployedBytecodeHash": "7ac726fa68fc52eb88bd9617370578dea027d59cde2700f845d7232daac4e5b9",
+      "address": "0x088A7a91140CD0A95a6A6Cc6d6c2cBf760F584B6",
+      "constructorCode": "60806040525b5b61000b565b6105f98061001a6000396000f3fe",
+      "bodyBytecodeHash": "7b7dc92417c54fc6cb32306d593c8af7ccba4fd3c1dd7e51ae186194f924a426",
+      "localBytecodeHash": "af36d9477ac597d2e85dda56f20243eb8864a8357709e4600891fb69793c3225",
+      "deployedBytecodeHash": "af36d9477ac597d2e85dda56f20243eb8864a8357709e4600891fb69793c3225",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -109,7 +109,7 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 1032,
+          "astId": 684,
           "type": "t_bool",
           "src": "757:24:8"
         },
@@ -117,7 +117,7 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 1034,
+          "astId": 686,
           "type": "t_bool",
           "src": "876:25:8"
         },
@@ -125,7 +125,7 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 1090,
+          "astId": 742,
           "type": "t_array:50<t_uint256>",
           "src": "1951:29:8"
         },
@@ -133,17 +133,17 @@
           "contract": "GelatoActionsStandard",
           "path": "contracts/Triggers-Actions/Actions/GelatoActionsStandard.sol",
           "label": "actionSelector",
-          "astId": 3831,
+          "astId": 3573,
           "type": "t_bytes4",
-          "src": "215:30:25"
+          "src": "215:30:28"
         },
         {
           "contract": "GelatoActionsStandard",
           "path": "contracts/Triggers-Actions/Actions/GelatoActionsStandard.sol",
           "label": "actionGasStipend",
-          "astId": 3833,
+          "astId": 3575,
           "type": "t_uint256",
-          "src": "251:33:25"
+          "src": "251:33:28"
         }
       ],
       "warnings": {
@@ -157,11 +157,11 @@
       }
     },
     "GelatoCore": {
-      "address": "0x7ED7B668644a9C09ff7d509A3eC00E5A9588A18B",
-      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614ea38061001e6000396000f3fe",
-      "bodyBytecodeHash": "45238ade3d9395a78325467553184721113c58a3394cf266775938f8e830e17a",
-      "localBytecodeHash": "1d1eea0c419e83cab08623032709b214342b5a1bd44af7cc2153a001de3ad36e",
-      "deployedBytecodeHash": "1d1eea0c419e83cab08623032709b214342b5a1bd44af7cc2153a001de3ad36e",
+      "address": "0xACDF49fA73FD3dA11ed4Bc03E1Bfb4EF14918a5A",
+      "constructorCode": "60806040525b5b5b5b5b5b61000f565b614e6f8061001e6000396000f3fe",
+      "bodyBytecodeHash": "2a5907c555f13b4bd0516630b0d7292515e182639ca983f3621bc1c2df1b32c1",
+      "localBytecodeHash": "5de861221878520b0e5b5546f66f309c44a00bd3100d77e0907d572308c4ea45",
+      "deployedBytecodeHash": "5de861221878520b0e5b5546f66f309c44a00bd3100d77e0907d572308c4ea45",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -464,7 +464,7 @@
       {
         "address": "0x8710aF1bC86a569c18Ec5b41A656B3aA9Eca9037",
         "version": "1.0.0",
-        "implementation": "0x6449992895c36BE20b356D85E3A1411135D46a7b",
+        "implementation": "0x088A7a91140CD0A95a6A6Cc6d6c2cBf760F584B6",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }
@@ -473,7 +473,7 @@
       {
         "address": "0x624f09392ae014484a1aB64c6D155A7E2B6998E6",
         "version": "1.0.0",
-        "implementation": "0x7ED7B668644a9C09ff7d509A3eC00E5A9588A18B",
+        "implementation": "0xACDF49fA73FD3dA11ed4Bc03E1Bfb4EF14918a5A",
         "admin": "0xB6704F7233C976090f38d5F03fd8Df9CE164941F",
         "kind": "Upgradeable"
       }
