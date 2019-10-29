@@ -81,20 +81,22 @@ async function queryChainAndExecute() {
   try {
     const logsMinted = await provider.getLogs(filterMinted);
     logsMinted.forEach(log => {
-      const parsedLog = iface.parseLog(log);
-      const executionClaimId = parsedLog.values.executionClaimId.toString();
-      console.log(
-        `\t\tLogNewExecutionClaimMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
-      );
-      mintedClaims[executionClaimId] = {
-        selectedExecutor: parsedLog.values.selectedExecutor,
-        executionClaimId: executionClaimId,
-        userProxy: parsedLog.values.userProxy,
-        actionPayload: parsedLog.values.actionPayload,
-        executeGas: parsedLog.values.executeGas,
-        executionClaimExpiryDate: parsedLog.values.executionClaimExpiryDate,
-        executorFee: parsedLog.values.executorFee
-      };
+      if (log !== undefined) {
+        const parsedLog = iface.parseLog(log);
+        const executionClaimId = parsedLog.values.executionClaimId.toString();
+        console.log(
+          `\t\tLogNewExecutionClaimMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
+        );
+        mintedClaims[executionClaimId] = {
+          selectedExecutor: parsedLog.values.selectedExecutor,
+          executionClaimId: executionClaimId,
+          userProxy: parsedLog.values.userProxy,
+          actionPayload: parsedLog.values.actionPayload,
+          executeGas: parsedLog.values.executeGas,
+          executionClaimExpiryDate: parsedLog.values.executionClaimExpiryDate,
+          executorFee: parsedLog.values.executorFee
+        };
+      }
     });
   } catch (err) {
     console.log(err);
@@ -112,15 +114,17 @@ async function queryChainAndExecute() {
   try {
     const logsTAMinted = await provider.getLogs(filterTAMinted);
     logsTAMinted.forEach(log => {
-      const parsedLog = iface.parseLog(log);
-      const executionClaimId = parsedLog.values.executionClaimId.toString();
-      console.log(
-        `\t\tLogTriggerActionMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
-      );
-      mintedClaims[executionClaimId].trigger = parsedLog.values.trigger;
-      mintedClaims[executionClaimId].triggerPayload =
-        parsedLog.values.triggerPayload;
-      mintedClaims[executionClaimId].action = parsedLog.values.action;
+      if (log !== undefined) {
+        const parsedLog = iface.parseLog(log);
+        const executionClaimId = parsedLog.values.executionClaimId.toString();
+        console.log(
+          `\t\tLogTriggerActionMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
+        );
+        mintedClaims[executionClaimId].trigger = parsedLog.values.trigger;
+        mintedClaims[executionClaimId].triggerPayload =
+          parsedLog.values.triggerPayload;
+        mintedClaims[executionClaimId].action = parsedLog.values.action;
+      }
     });
   } catch (err) {
     console.log(err);
@@ -138,16 +142,22 @@ async function queryChainAndExecute() {
   try {
     const logsDeleted = await provider.getLogs(filterDeleted);
     logsDeleted.forEach(log => {
-      const parsedLog = iface.parseLog(log);
-      const executionClaimId = parsedLog.values.executionClaimId.toString();
-      for (let key of Object.keys(mintedClaims[executionClaimId])) {
-        delete mintedClaims[executionClaimId][key];
+      if (log !== undefined) {
+        const parsedLog = iface.parseLog(log);
+        const executionClaimId = parsedLog.values.executionClaimId.toString();
+        if (mintedClaims[executionClaimId] === undefined) {
+          delete mintedClaims[executionClaimId];
+        } else {
+          for (let key of Object.keys(mintedClaims[executionClaimId])) {
+            delete mintedClaims[executionClaimId][key];
+          }
+          console.log(
+            `\n\t\t LogClaimExecutedBurnedAndDeleted: ${executionClaimId} ${Object.keys(
+              mintedClaims[executionClaimId]
+            ).length === 0}`
+          );
+        }
       }
-      console.log(
-        `\n\t\t LogClaimExecutedBurnedAndDeleted: ${executionClaimId} ${Object.keys(
-          mintedClaims[executionClaimId]
-        ).length === 0}`
-      );
     });
   } catch (err) {
     console.log(err);
@@ -165,16 +175,18 @@ async function queryChainAndExecute() {
   try {
     const logsCancelled = await provider.getLogs(filterCancelled);
     logsCancelled.forEach(log => {
-      const parsedLog = iface.parseLog(log);
-      const executionClaimId = parsedLog.values.executionClaimId.toString();
-      for (let key of Object.keys(mintedClaims[executionClaimId])) {
-        delete mintedClaims[executionClaimId][key];
+      if (log !== undefined) {
+        const parsedLog = iface.parseLog(log);
+        const executionClaimId = parsedLog.values.executionClaimId.toString();
+        for (let key of Object.keys(mintedClaims[executionClaimId])) {
+          delete mintedClaims[executionClaimId][key];
+        }
+        console.log(
+          `\n\t\t LogExecutionClaimCancelled: ${executionClaimId} ${Object.keys(
+            mintedClaims[executionClaimId]
+          ).length === 0}`
+        );
       }
-      console.log(
-        `\n\t\t LogExecutionClaimCancelled: ${executionClaimId} ${Object.keys(
-          mintedClaims[executionClaimId]
-        ).length === 0}`
-      );
     });
   } catch (err) {
     console.log(err);
@@ -183,10 +195,12 @@ async function queryChainAndExecute() {
   // Log available executionClaims
   console.log("\n\n\t\t Available ExecutionClaims:");
   for (let executionClaimId in mintedClaims) {
-    for (let [key, value] of Object.entries(mintedClaims[executionClaimId])) {
-      console.log(`\t\t${key}: ${value}`);
+    if (executionClaimId !== undefined) {
+      for (let [key, value] of Object.entries(mintedClaims[executionClaimId])) {
+        console.log(`\t\t${key}: ${value}`);
+      }
+      console.log("\n");
     }
-    console.log("\n");
   }
 
   // Loop through all execution claims and check if they are executable.
@@ -202,6 +216,7 @@ async function queryChainAndExecute() {
     "Executable"
   ];
   for (let executionClaimId in mintedClaims) {
+    if (executionClaimId === undefined) continue;
     // Call canExecute
     try {
       if (executionClaimId !== undefined) {
@@ -262,7 +277,7 @@ async function queryChainAndExecute() {
     }
 
     // Reset the searchFromBlock
-    searchFromBlock = currentBlock - 2;
+    searchFromBlock = currentBlock - 8;
     console.log(
       `\n\n\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
     );
