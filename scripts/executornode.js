@@ -61,11 +61,6 @@ async function queryChainAndExecute() {
   console.log(`\n\t\t Current block number:       ${searchFromBlock}`);
   console.log(`\n\t\t Running Executor Node from: ${wallet.address}\n`);
 
-  // add this handler before emitting any events
-  process.on("uncaughtException", err => {
-    console.log("UNCAUGHT EXCEPTION - keeping process alive:", err);
-  });
-
   // Log Parsing
   let iface = new ethers.utils.Interface(gelatoCoreContractABI);
 
