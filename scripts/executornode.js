@@ -2,6 +2,7 @@
 const ethers = require("ethers");
 
 // Helpers
+const debug = require("debug")("executornode");
 const sleep = require("./helpers/sleep.js").sleep;
 
 // ENV VARIABLES
@@ -9,7 +10,7 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const DEV_MNEMONIC = process.env.DEV_MNEMONIC;
 const INFURA_ID = process.env.INFURA_ID;
-console.log(
+debug(
   `\n\t\t env variables configured: ${DEV_MNEMONIC !== undefined &&
     INFURA_ID !== undefined}`
 );
@@ -39,7 +40,7 @@ const gelatoCoreContract = new ethers.Contract(
 
 // The block from which we start
 let searchFromBlock = process.env.BLOCK;
-console.log(`\n\t\t Starting from block number: ${searchFromBlock}`);
+debug(`\n\t\t Starting from block number: ${searchFromBlock}`);
 if (searchFromBlock === "") {
   throw new Error("You must call this script with 'export BLOCK=NUMBER;'");
 }
@@ -49,7 +50,7 @@ async function main() {
   queryChainAndExecute();
   setInterval(queryChainAndExecute, 60 * 1000);
 }
-main().catch(err => console.log(err));
+main().catch(err => debug(err));
 
 // Fetch minted and not burned executionClaims
 let mintedClaims = {};
@@ -57,9 +58,9 @@ let mintedClaims = {};
 // The logic that gets executed from inside main()
 async function queryChainAndExecute() {
   let currentBlock = await provider.getBlockNumber();
-  console.log(`\n\t\t Starting from block number: ${searchFromBlock}`);
-  console.log(`\n\t\t Current block number:       ${searchFromBlock}`);
-  console.log(`\n\t\t Running Executor Node from: ${wallet.address}\n`);
+  debug(`\n\t\t Starting from block number: ${searchFromBlock}`);
+  debug(`\n\t\t Current block number:       ${searchFromBlock}`);
+  debug(`\n\t\t Running Executor Node from: ${wallet.address}\n`);
 
   // Log Parsing
   let iface = new ethers.utils.Interface(gelatoCoreContractABI);
@@ -79,7 +80,7 @@ async function queryChainAndExecute() {
       if (log !== undefined) {
         const parsedLog = iface.parseLog(log);
         const executionClaimId = parsedLog.values.executionClaimId.toString();
-        console.log(
+        debug(
           `\t\tLogNewExecutionClaimMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
         );
         mintedClaims[executionClaimId] = {
@@ -94,7 +95,7 @@ async function queryChainAndExecute() {
       }
     });
   } catch (err) {
-    console.log(err);
+    debug(err);
   }
 
   // LogTriggerActionMinted
@@ -112,7 +113,7 @@ async function queryChainAndExecute() {
       if (log !== undefined) {
         const parsedLog = iface.parseLog(log);
         const executionClaimId = parsedLog.values.executionClaimId.toString();
-        console.log(
+        debug(
           `\t\tLogTriggerActionMinted:\n\t\texecutionClaimId: ${executionClaimId}\n`
         );
         mintedClaims[executionClaimId].trigger = parsedLog.values.trigger;
@@ -122,7 +123,7 @@ async function queryChainAndExecute() {
       }
     });
   } catch (err) {
-    console.log(err);
+    debug(err);
   }
 
   // LogClaimExecutedAndDeleted
@@ -144,11 +145,11 @@ async function queryChainAndExecute() {
           delete mintedClaims[executionClaimId][key];
         }
         delete mintedClaims[executionClaimId];
-        console.log(`\n\t\t LogClaimExecutedAndDeleted: ${executionClaimId}`);
+        debug(`\n\t\t LogClaimExecutedAndDeleted: ${executionClaimId}`);
       }
     });
   } catch (err) {
-    console.log(err);
+    debug(err);
   }
 
   // LogExecutionClaimCancelled
@@ -170,26 +171,26 @@ async function queryChainAndExecute() {
           delete mintedClaims[executionClaimId][key];
         }
         delete mintedClaims[executionClaimId];
-        console.log(`\n\t\t LogExecutionClaimCancelled: ${executionClaimId}`);
+        debug(`\n\t\t LogExecutionClaimCancelled: ${executionClaimId}`);
       }
     });
   } catch (err) {
-    console.log(err);
+    debug(err);
   }
 
   // Log available executionClaims
   if (Object.values(mintedClaims).length === 0) {
-    console.log("\n\n\t\t Available ExecutionClaims: NONE");
+    debug("\n\n\t\t Available ExecutionClaims: NONE");
   } else {
     for (let executionClaimId in mintedClaims) {
       if (executionClaimId.trigger !== undefined) {
-        console.log("\n\n\t\t Available ExecutionClaims:");
+        debug("\n\n\t\t Available ExecutionClaims:");
         for (let [key, value] of Object.entries(
           mintedClaims[executionClaimId]
         )) {
-          console.log(`\t\t${key}: ${value}`);
+          debug(`\t\t${key}: ${value}`);
         }
-        console.log("\n");
+        debug("\n");
       }
     }
   }
@@ -219,18 +220,18 @@ async function queryChainAndExecute() {
         mintedClaims[executionClaimId].executionClaimExpiryDate,
         mintedClaims[executionClaimId].executorFee
       );
-      console.log(
+      debug(
         `\n\t\t CanExecute Result: ${
           canExecuteResults[parseInt(canExecuteReturn)]
         }`
       );
       if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
-        console.log(`
+        debug(`
             🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
           `);
         let tx;
         try {
-          console.log(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
+          debug(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
           tx = await gelatoCoreContract.execute(
             mintedClaims[executionClaimId].trigger,
             mintedClaims[executionClaimId].triggerPayload,
@@ -245,28 +246,28 @@ async function queryChainAndExecute() {
               gasLimit: 5000000
             }
           );
-          console.log(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
+          debug(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
           // The operation is NOT complete yet; we must wait until it is mined
-          console.log(
+          debug(
             "\t\t waiting for the execute transaction to get mined \n"
           );
           txreceipt = await tx.wait();
-          console.log(`\t\t Execute TX Receipt:\n ${txreceipt.blockNumber}`);
+          debug(`\t\t Execute TX Receipt:\n ${txreceipt.blockNumber}`);
         } catch (err) {
-          console.log(err);
+          debug(err);
         }
       } else {
-        console.log(
+        debug(
           `\t\t❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
         );
       }
     } catch (err) {
-      console.log(err);
+      debug(err);
     }
   }
   // Reset the searchFromBlock
   searchFromBlock = currentBlock - 8;
-  console.log(
+  debug(
     `\n\n\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
   );
 }

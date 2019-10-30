@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "mint": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
-    "exec": "export BLOCK=$BLOCK; node scripts/executornode.js"
+    "exec": "export BLOCK=$BLOCK; DEBUG='executornode' && node scripts/executornode.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@truffle/hdwallet-provider": "^1.0.23",
+    "debug": "^4.1.1",
     "dotenv": "^8.2.0"
   },
   "dependencies": {
