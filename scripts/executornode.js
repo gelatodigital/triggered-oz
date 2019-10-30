@@ -145,18 +145,11 @@ async function queryChainAndExecute() {
       if (log !== undefined) {
         const parsedLog = iface.parseLog(log);
         const executionClaimId = parsedLog.values.executionClaimId.toString();
-        if (mintedClaims[executionClaimId] === undefined) {
-          delete mintedClaims[executionClaimId];
-        } else {
-          for (let key of Object.keys(mintedClaims[executionClaimId])) {
-            delete mintedClaims[executionClaimId][key];
-          }
-          console.log(
-            `\n\t\t LogClaimExecutedBurnedAndDeleted: ${executionClaimId} ${Object.keys(
-              mintedClaims[executionClaimId]
-            ).length === 0}`
-          );
+        for (let key of Object.keys(mintedClaims[executionClaimId])) {
+          delete mintedClaims[executionClaimId][key];
         }
+        delete mintedClaims[executionClaimId];
+        console.log(`\n\t\t LogClaimExecutedAndDeleted: ${executionClaimId}`);
       }
     });
   } catch (err) {
@@ -181,11 +174,8 @@ async function queryChainAndExecute() {
         for (let key of Object.keys(mintedClaims[executionClaimId])) {
           delete mintedClaims[executionClaimId][key];
         }
-        console.log(
-          `\n\t\t LogExecutionClaimCancelled: ${executionClaimId} ${Object.keys(
-            mintedClaims[executionClaimId]
-          ).length === 0}`
-        );
+        delete mintedClaims[executionClaimId];
+        console.log(`\n\t\t LogExecutionClaimCancelled: ${executionClaimId}`);
       }
     });
   } catch (err) {
@@ -193,13 +183,19 @@ async function queryChainAndExecute() {
   }
 
   // Log available executionClaims
-  console.log("\n\n\t\t Available ExecutionClaims:");
-  for (let executionClaimId in mintedClaims) {
-    if (executionClaimId !== undefined) {
-      for (let [key, value] of Object.entries(mintedClaims[executionClaimId])) {
-        console.log(`\t\t${key}: ${value}`);
+  if (Object.values(mintedClaims).length === 0) {
+    console.log("\n\n\t\t Available ExecutionClaims: NONE");
+  } else {
+    for (let executionClaimId in mintedClaims) {
+      if (executionClaimId.trigger !== undefined) {
+        console.log("\n\n\t\t Available ExecutionClaims:");
+        for (let [key, value] of Object.entries(
+          mintedClaims[executionClaimId]
+        )) {
+          console.log(`\t\t${key}: ${value}`);
+        }
+        console.log("\n");
       }
-      console.log("\n");
     }
   }
 
@@ -216,70 +212,66 @@ async function queryChainAndExecute() {
     "Executable"
   ];
   for (let executionClaimId in mintedClaims) {
-    if (executionClaimId === undefined) continue;
     // Call canExecute
     try {
-      if (executionClaimId !== undefined) {
-        canExecuteReturn = await gelatoCoreContract.canExecute(
-          mintedClaims[executionClaimId].trigger,
-          mintedClaims[executionClaimId].triggerPayload,
-          mintedClaims[executionClaimId].userProxy,
-          mintedClaims[executionClaimId].actionPayload,
-          mintedClaims[executionClaimId].executeGas,
-          mintedClaims[executionClaimId].executionClaimId,
-          mintedClaims[executionClaimId].executionClaimExpiryDate,
-          mintedClaims[executionClaimId].executorFee
-        );
-        console.log(
-          `\n\t\t CanExecute Result: ${
-            canExecuteResults[parseInt(canExecuteReturn)]
-          }`
-        );
-        if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
-          console.log(`
+      canExecuteReturn = await gelatoCoreContract.canExecute(
+        mintedClaims[executionClaimId].trigger,
+        mintedClaims[executionClaimId].triggerPayload,
+        mintedClaims[executionClaimId].userProxy,
+        mintedClaims[executionClaimId].actionPayload,
+        mintedClaims[executionClaimId].executeGas,
+        mintedClaims[executionClaimId].executionClaimId,
+        mintedClaims[executionClaimId].executionClaimExpiryDate,
+        mintedClaims[executionClaimId].executorFee
+      );
+      console.log(
+        `\n\t\t CanExecute Result: ${
+          canExecuteResults[parseInt(canExecuteReturn)]
+        }`
+      );
+      if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
+        console.log(`
             🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
           `);
-          let tx;
-          try {
-            console.log(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
-            tx = await gelatoCoreContract.execute(
-              mintedClaims[executionClaimId].trigger,
-              mintedClaims[executionClaimId].triggerPayload,
-              mintedClaims[executionClaimId].userProxy,
-              mintedClaims[executionClaimId].actionPayload,
-              mintedClaims[executionClaimId].action,
-              mintedClaims[executionClaimId].executeGas,
-              mintedClaims[executionClaimId].executionClaimId,
-              mintedClaims[executionClaimId].executionClaimExpiryDate,
-              mintedClaims[executionClaimId].executorFee,
-              {
-                gasLimit: 5000000
-              }
-            );
-            console.log(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
-            // The operation is NOT complete yet; we must wait until it is mined
-            console.log(
-              "\t\t waiting for the execute transaction to get mined \n"
-            );
-            txreceipt = await tx.wait();
-            console.log(`\t\t Execute TX Receipt:\n ${txreceipt.blockNumber}`);
-          } catch (err) {
-            console.log(err);
-          }
-        } else {
-          console.log(
-            `\t\t❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
+        let tx;
+        try {
+          console.log(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
+          tx = await gelatoCoreContract.execute(
+            mintedClaims[executionClaimId].trigger,
+            mintedClaims[executionClaimId].triggerPayload,
+            mintedClaims[executionClaimId].userProxy,
+            mintedClaims[executionClaimId].actionPayload,
+            mintedClaims[executionClaimId].action,
+            mintedClaims[executionClaimId].executeGas,
+            mintedClaims[executionClaimId].executionClaimId,
+            mintedClaims[executionClaimId].executionClaimExpiryDate,
+            mintedClaims[executionClaimId].executorFee,
+            {
+              gasLimit: 5000000
+            }
           );
+          console.log(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
+          // The operation is NOT complete yet; we must wait until it is mined
+          console.log(
+            "\t\t waiting for the execute transaction to get mined \n"
+          );
+          txreceipt = await tx.wait();
+          console.log(`\t\t Execute TX Receipt:\n ${txreceipt.blockNumber}`);
+        } catch (err) {
+          console.log(err);
         }
+      } else {
+        console.log(
+          `\t\t❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
+        );
       }
     } catch (err) {
       console.log(err);
     }
-
-    // Reset the searchFromBlock
-    searchFromBlock = currentBlock - 8;
-    console.log(
-      `\n\n\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
-    );
   }
+  // Reset the searchFromBlock
+  searchFromBlock = currentBlock - 8;
+  console.log(
+    `\n\n\t\t Current Block: ${currentBlock}\n\t\t Next search from block: ${searchFromBlock}`
+  );
 }
