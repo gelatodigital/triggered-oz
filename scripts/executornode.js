@@ -1,8 +1,10 @@
 // Javascript Ethereum API Library
 const ethers = require("ethers");
 
-// Helpers
+// Logging
 const debug = require("debug")("executornode");
+
+// Helpers
 const sleep = require("./helpers/sleep.js").sleep;
 
 // ENV VARIABLES
@@ -248,9 +250,7 @@ async function queryChainAndExecute() {
           );
           debug(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
           // The operation is NOT complete yet; we must wait until it is mined
-          debug(
-            "\t\t waiting for the execute transaction to get mined \n"
-          );
+          debug("\t\t waiting for the execute transaction to get mined \n");
           txreceipt = await tx.wait();
           debug(`\t\t Execute TX Receipt:\n ${txreceipt.blockNumber}`);
         } catch (err) {
