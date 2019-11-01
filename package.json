@@ -1,7 +1,9 @@
 {
   "name": "triggered-oz",
   "version": "1.0.0",
-  "description": "",
+  "engines": {
+    "node": "12.12.0"
+  },
   "main": "index.js",
   "scripts": {
     "mint": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
