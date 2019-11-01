@@ -50,12 +50,18 @@ if (searchFromBlock === "") {
 // This gets executed with node
 async function main() {
   queryChainAndExecute();
-  setInterval(queryChainAndExecute, 60 * 1000);
+  setInterval(queryChainAndExecute, 30 * 1000);
 }
 main().catch(err => debug(err));
 
 // Fetch minted and not burned executionClaims
 let mintedClaims = {};
+// Record the executionClaimIds currently being executed
+let beingExecuted = {};
+// Record the number of failed "executable" execute txHash
+let failedExecuteAttempts = {};
+// The blacklist of buggy claims that wont get execution attempts no 🤶
+let blacklist = {};
 
 // The logic that gets executed from inside main()
 async function queryChainAndExecute() {
@@ -210,6 +216,18 @@ async function queryChainAndExecute() {
     "Executable"
   ];
   for (let executionClaimId in mintedClaims) {
+    // Proceed only if executionClaimId not currently undergoing execution
+    if (beingExecuted[executionClaimId] === true) {
+      debug(`\t\t ❗❗ Skipping ID ${executionClaimId} as already being executed ❗❗`);
+      continue;
+    }
+    // Proceed only if executionClaimId not currently undergoing execution
+    if (blacklist[executionClaimId] === true) {
+      debug(
+        `\t\t ❗❗Skipping ID ${executionClaimId} as it is BLACKLISTED (3 failed attempts)❗❗`
+      );
+      continue;
+    }
     // Call canExecute
     try {
       canExecuteReturn = await gelatoCoreContract.canExecute(
@@ -223,46 +241,67 @@ async function queryChainAndExecute() {
         mintedClaims[executionClaimId].executorFee
       );
       debug(
-        `\n\t\t CanExecute Result: ${
+        `\n\t\t CanExecute Result for ${executionClaimId}: ${
           canExecuteResults[parseInt(canExecuteReturn)]
         }`
       );
-      if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
-        debug(`
-            🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
-          `);
-        let tx;
-        try {
-          debug(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
-          tx = await gelatoCoreContract.execute(
-            mintedClaims[executionClaimId].trigger,
-            mintedClaims[executionClaimId].triggerPayload,
-            mintedClaims[executionClaimId].userProxy,
-            mintedClaims[executionClaimId].actionPayload,
-            mintedClaims[executionClaimId].action,
-            mintedClaims[executionClaimId].executeGas,
-            mintedClaims[executionClaimId].executionClaimId,
-            mintedClaims[executionClaimId].executionClaimExpiryDate,
-            mintedClaims[executionClaimId].executorFee,
-            {
-              gasLimit: 5000000
-            }
-          );
-          debug(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
-          // The operation is NOT complete yet; we must wait until it is mined
-          debug("\t\t waiting for the execute transaction to get mined \n");
-          txreceipt = await tx.wait();
-          debug(`\t\t Execute TX Receipt:\n ${txreceipt.blockNumber}`);
-        } catch (err) {
-          debug(err);
-        }
-      } else {
-        debug(
-          `\t\t❌❌❌ExeutionClaim: ${executionClaimId} is NOT executable❌❌❌`
-        );
-      }
     } catch (err) {
       debug(err);
+    }
+    if (canExecuteResults[parseInt(canExecuteReturn)] === "Executable") {
+      debug(`
+            🔥🔥🔥ExeutionClaim: ${executionClaimId} is executable🔥🔥🔥
+          `);
+      let tx;
+      try {
+        debug(`\t\t⚡⚡⚡ Send TX ⚡⚡⚡\n`);
+        beingExecuted[executionClaimId] = true;
+        tx = await gelatoCoreContract.execute(
+          mintedClaims[executionClaimId].trigger,
+          mintedClaims[executionClaimId].triggerPayload,
+          mintedClaims[executionClaimId].userProxy,
+          mintedClaims[executionClaimId].actionPayload,
+          mintedClaims[executionClaimId].action,
+          mintedClaims[executionClaimId].executeGas,
+          mintedClaims[executionClaimId].executionClaimId,
+          mintedClaims[executionClaimId].executionClaimExpiryDate,
+          mintedClaims[executionClaimId].executorFee,
+          {
+            gasLimit: 5000000
+          }
+        );
+        debug(`\t\t gelatoCore.execute() txHash:\n \t${tx.hash}\n`);
+        // The operation is NOT complete yet; we must wait until it is mined
+        debug("\t\t waiting for the execute transaction to get mined \n");
+        txreceipt = await tx.wait();
+        beingExecuted[executionClaimId] = false;
+        debug("\t\t Execute TX Receipt:\n", txreceipt);
+      } catch (err) {
+        debug(err);
+        beingExecuted[executionClaimId] = false;
+        if (failedExecuteAttempts[executionClaimId] === undefined) {
+          failedExecuteAttempts[executionClaimId] = 1;
+          debug(
+            `\n\t\t ❗❗ FAILED EXECUTE ATTEMPT RECORDED FOR ID ${executionClaimId}: ${failedExecuteAttempts[executionClaimId]}/3 allowed attempts ❗❗ `
+          );
+          continue;
+        }
+        failedExecuteAttempts[executionClaimId]++;
+        debug(
+          `\n\t\t❗❗FAILED EXECUTE ATTEMPT RECORDED FOR ID ${executionClaimId}: ${failedExecuteAttempts[executionClaimId]}/3 allowed attempts ❗❗`
+        );
+        if (failedExecuteAttempts[executionClaimId] === 3) {
+          debug(
+            `\n\t\t ❗❗ 3 ATTEMPTS FOR ID ${executionClaimId} FAILED -> BLACKLISTED ❗❗`
+          );
+          blacklist[executionClaimId] = true;
+          continue;
+        }
+      }
+    } else {
+      debug(
+        `\t\t❌❌❌ ExeutionClaim: ${executionClaimId} is NOT executable ❌❌❌`
+      );
     }
   }
   // Reset the searchFromBlock
