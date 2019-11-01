@@ -13,13 +13,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@truffle/hdwallet-provider": "^1.0.23",
-    "debug": "^4.1.1",
-    "dotenv": "^8.2.0"
-  },
-  "dependencies": {
     "@openzeppelin/contracts-ethereum-package": "^2.3.0",
     "@openzeppelin/upgrades": "^2.5.3",
+    "@truffle/hdwallet-provider": "^1.0.23"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
     "ethers": "^4.0.38"
   }
 }
