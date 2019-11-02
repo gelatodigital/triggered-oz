@@ -7,7 +7,7 @@
   "main": "index.js",
   "scripts": {
     "mint": "node scripts/minting/proxyMultiMintForTimeTrigger.js",
-    "exec": "export BLOCK=$BLOCK; DEBUG='executornode' && node scripts/executornode.js"
+    "exec-debug": "export BLOCK=$BLOCK; DEBUG='executornode' && node scripts/executornode.js"
   },
   "keywords": [],
   "author": "",

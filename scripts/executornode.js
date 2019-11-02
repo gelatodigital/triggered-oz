@@ -7,7 +7,7 @@ const debug = require("debug")("executornode");
 // Helpers
 const sleep = require("./helpers/sleep.js").sleep;
 
-// ENV VARIABLES
+// ENV VARIABLES for exec-debug (heroku local default fetches from .env)
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const DEV_MNEMONIC = process.env.DEV_MNEMONIC;
