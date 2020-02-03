@@ -63,12 +63,12 @@ const TRIGGER_TIME_PROXY_ADDRESS = "0x8ef28734d54d63A50a7D7F37A4523f9af5ca2B19";
 const START_TIME = Math.floor(Date.now() / 1000);
 const ACTION_KYBER_IMPL_ADDRESS = "0xD31D01544Ab158a4370D38B2E9b0d3390E928A2b";
 // Specific Action Params: encoded during main() execution
-const USER = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
+const USER = """";
 const SRC = "0x4E470dc7321E84CA96FcAEDD0C8aBCebbAEB68C6"; // ropsten knc
 const DEST = "0xaD6D458402F60fD3Bd25163575031ACDce07538D"; // ropsten dai
 const SRC_AMOUNT = ethers.utils.parseUnits("10", 18);
 // minConversionRate async fetched from KyberNetwork during main() execution
-const SELECTED_EXECUTOR_ADDRESS = "0x203AdbbA2402a36C202F207caA8ce81f1A4c7a72";
+const SELECTED_EXECUTOR_ADDRESS = """";
 const INTERVAL_SPAN = "120"; // 300 seconds
 const NUMBER_OF_MINTS = "2";
 
